@@ -424,7 +424,7 @@ import {mapActions, mapGetters} from 'vuex'
           this.color = 'success'
           this.isPressed = false
           this.msg = 'רשימת התלמידים יובאה בהצלחה'
-          this.uploadText = "Import Excel"
+          this.uploadText = "ייבוא מאקסל"
           this.uploadExcel.file = null
           this.fetchStudents()
         }
@@ -433,7 +433,7 @@ import {mapActions, mapGetters} from 'vuex'
           this.color = 'error'
           this.msg = 'אירעה שגיאה'
           this.isPressed = false
-          this.uploadText = "Import Excel"
+          this.uploadText = "ייבוא מאקסל"
           this.uploadExcel.file = null
         }
       }
