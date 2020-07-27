@@ -109,15 +109,12 @@
                       <v-text-field :label="ID" v-model="student.student_id" :rules="required" outlined clearable required></v-text-field>
                     </v-col>
                     <v-col cols="12" sm="6" md="6">
-                      <v-text-field label="שם פרטי*" v-model="student.first_name" :rules="required" outlined clearable required></v-text-field>
-                    </v-col>
-                    <v-col cols="12" sm="6" md="6">
-                      <v-text-field label="שם משפחה*" outlined v-model="student.last_name" :rules="required" clearable required></v-text-field>
+                      <v-text-field label="שם מלא*" v-model="student.full_name" :rules="required" outlined clearable required></v-text-field>
                     </v-col>
                     <v-col cols="12" sm="6" md="6">
                       <v-text-field label="מחזור*" outlined clearable v-model="student.class" :rules="required" required></v-text-field>
                     </v-col>
-                    <v-col cols="12" sm="12" md="12">
+                    <v-col cols="12" sm="6" md="6">
                       <v-text-field label="מספר טלפון*" outlined v-model="student.phone_number" :rules="required" clearable required></v-text-field>
                     </v-col>
                     
@@ -152,15 +149,12 @@
                       <v-text-field label='ת"ז*' v-model="studentToEdit.student_id" disabled :rules="required" outlined clearable required></v-text-field>
                     </v-col>
                     <v-col cols="12" sm="6" md="6">
-                      <v-text-field label="שם פרטי" v-model="studentToEdit.first_name" :rules="required" outlined clearable required></v-text-field>
-                    </v-col>
-                    <v-col cols="12" sm="6" md="6">
-                      <v-text-field label="שם משפחה*" v-model="studentToEdit.last_name" :rules="required" outlined clearable required></v-text-field>
+                      <v-text-field label="שם מלא*" v-model="studentToEdit.full_name" :rules="required" outlined clearable required></v-text-field>
                     </v-col>
                     <v-col cols="12" sm="6" md="6">
                       <v-text-field label="מחזור*" v-model="studentToEdit.class" :rules="required" outlined clearable required></v-text-field>
                     </v-col>
-                    <v-col cols="12" sm="12" md="12">
+                    <v-col cols="12" sm="6" md="6">
                       <v-text-field label="מספר טלפון*" v-model="studentToEdit.phone_number" :rules="required" outlined clearable required></v-text-field>
                     </v-col>
                   </v-row>
@@ -185,7 +179,7 @@
               <v-container>
                <v-row v-if="studentToDelete">
                  <v-col cols="12" class="text-center">
-                   <h4>האם הנך בטוח שברצונך למחוק את התלמיד {{studentToDelete.first_name}} {{studentToDelete.last_name}} </h4>
+                   <h4>האם הנך בטוח שברצונך למחוק את התלמיד {{studentToDelete.full_name}}?</h4>
                  </v-col>
                  
                </v-row>
@@ -228,8 +222,7 @@ import {mapActions, mapGetters} from 'vuex'
             ],
             student: {
               student_id: null,
-              first_name: null,
-              last_name: null,
+              full_name: null,
               phone_number: null,
               class: null
             },
@@ -245,13 +238,8 @@ import {mapActions, mapGetters} from 'vuex'
                     sortable: true,
                 },
                 {
-                    text: 'שם פרטי',
-                    value: 'first_name',
-                    sortable: true,
-                },
-                {
-                    text: 'שם משפחה',
-                    value: 'last_name',
+                    text: 'שם מלא',
+                    value: 'full_name',
                     sortable: true,
                 },
                 {
@@ -322,7 +310,7 @@ import {mapActions, mapGetters} from 'vuex'
 
       },
       save() {
-        if(this.student.student_id == null || this.student.student_id == '' || this.student.first_name == null || this.student.first_name == ''  || this.student.last_name == null || this.student.last_name == ''  || this.student.phone_number == null || this.student.phone_number == '' || this.student.class == null || this.student.class == '') {
+        if(this.student.student_id == null || this.student.student_id == '' || this.student.full_name == null || this.student.full_name == '' || this.student.phone_number == null || this.student.phone_number == '' || this.student.class == null || this.student.class == '') {
           this.added = true
           this.color = 'error'
           this.msg = "All Fields Required"
@@ -345,7 +333,7 @@ import {mapActions, mapGetters} from 'vuex'
         this.editDialog = true
       },
       editStudent(){
-        if(this.studentToEdit.first_name == null || this.studentToEdit.first_name == ''  || this.studentToEdit.last_name == null || this.studentToEdit.last_name == ''  || this.studentToEdit.phone_number == null || this.studentToEdit.phone_number == '' || this.studentToEdit.class == null || this.studentToEdit.class == '') {
+        if(this.studentToEdit.full_name == null || this.studentToEdit.full_name == ''  || this.studentToEdit.phone_number == null || this.studentToEdit.phone_number == '' || this.studentToEdit.class == null || this.studentToEdit.class == '') {
           return
         }
         this.updateStudent(this.studentToEdit)

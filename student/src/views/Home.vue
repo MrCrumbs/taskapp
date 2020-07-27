@@ -145,7 +145,7 @@ export default {
         if(this.getStudents) {
             this.getStudents.forEach(element => {
             const obj = {
-              name: element.first_name + " " + element.last_name,
+              name: element.full_name,
               phone: element.phone_number
             }
             studs.push(obj)

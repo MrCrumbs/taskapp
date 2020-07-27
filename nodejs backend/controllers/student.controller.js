@@ -5,8 +5,7 @@ const excelToJson = require('convert-excel-to-json');
 exports.create_student = async (req, res) => {
     let student = new Student({
         student_id: req.body.student_id,
-        first_name: req.body.first_name,
-        last_name: req.body.last_name,
+        full_name: req.body.full_name,
         phone_number: req.body.phone_number,
         class: req.body.class
     })
@@ -108,10 +107,9 @@ exports.import_students = (req, res) => {
             result.Sheet1.forEach(element => {
                 let student = {
                     student_id: element.A,
-                    first_name: element.B,
-                    last_name: element.C,
-                    phone_number: element.D,
-                    class: element.E
+                    full_name: element.B,
+                    phone_number: element.C,
+                    class: element.D
                 }
                 students.push(student)
             });
