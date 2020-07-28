@@ -71,7 +71,7 @@ export default {
     },
     computed: {
         newTasks() {
-            let tasks = this.$props.tasks.filter(task => task.status.toLowerCase() == 'התקלה לא נמצאה')
+            let tasks = this.$props.tasks.filter(task => task.status == 'התקלה לא נמצאה')
             return tasks.sort((a,b) => { 
                 let x = a.urgency
                 let y = b.urgency
