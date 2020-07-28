@@ -2,15 +2,7 @@
     <div class="task-done">
         <v-row>
         <v-col cols="12">
-          <v-data-table
-                :headers="columns"
-                :items="newTasks"
-                class="elevation-1"
-                :search="search"
-                :footer-props="{
-                  'itemsPerPageText':'שורות לעמוד'
-                }"
-            >
+          <v-data-table :headers="columns" :items="newTasks" class="elevation-1" :search="search" :footer-props="{'itemsPerPageText':'שורות לעמוד'}">
             <template v-slot:top>
               <v-text-field  v-model="search" label="חיפוש" append-icon="mdi-magnify" class="mx-4 mt-3"></v-text-field>
             </template>
@@ -29,33 +21,15 @@
             <template v-slot:item.modified_on="{ item }">
               <span :class="checkLate(item) ? 'back-red' : ''">{{item.modified_on}}</span>
             </template>
-            <!-- <template v-slot:item.status="{ item }">
-              <v-chip color="success" dark small>{{item.status}}</v-chip>
-            </template> -->
-                <template v-slot:item.actions="{ item }">
-                    <v-icon
-                        small
-                        class="mr-2"
-                        @click="view(item)"
-                    >
-                        mdi-eye
-                    </v-icon>
-                    <v-icon
-                        small
-                        class="mr-2"
-                        @click="edit(item)"
-                    >
-                        mdi-pencil
-                    </v-icon>
-                    <v-icon
-                        small
-                        class="mr-2"
-                        @click="deleteItem(item)"
-                    >
-                        mdi-delete
-                    </v-icon>
-                </template>
-                
+            <template v-slot:item.status="{ item }">
+              <!-- <v-chip :color="item.status == 'New' ? 'purple' : 'orange'" dark small>{{item.status}}</v-chip> -->
+              <v-select v-model="item.status" @change="changeStatus(item)" :items="['חדש', 'התקלה לא ברורה', 'התקלה לא נמצאה', 'טיפול מתמשך', 'בוצע']" chips></v-select>
+            </template>
+            <template v-slot:item.actions="{ item }">
+              <v-icon small class="mr-2" @click="view(item)">mdi-eye</v-icon>
+              <v-icon small class="mr-2" @click="edit(item)">mdi-pencil</v-icon>
+              <v-icon small class="mr-2" @click="deleteItem(item)">mdi-delete</v-icon>
+            </template>
             </v-data-table>
         </v-col>
       </v-row>
@@ -63,7 +37,7 @@
 </template>
 
 <script>
-import moment from 'moment'
+import moment from "moment";
 export default {
     name: "Done",
     props: {
@@ -71,54 +45,27 @@ export default {
     },
     computed: {
         newTasks() {
-            let tasks = this.$props.tasks.filter(task => task.status == 'בוצע')
+            let tasks = this.$props.tasks.filter(task => task.status == 'בוצע');
             return tasks.sort((a,b) => { 
-                let x = a.urgency
-                let y = b.urgency
+                let x = a.urgency;
+                let y = b.urgency;
 
-                if(x == "גבוהה") {
-                    x = 1
-                }
-                if(x == "בינונית") {
-                    x = 2
-                }
-                if(x == "נמוכה") {
-                    x = 3
-                }
+                if(x == "גבוהה")
+                    x = 1;
+                if(x == "בינונית")
+                    x = 2;
+                if(x == "נמוכה")
+                    x = 3;
 
-                if(y == "גבוהה") {
-                    y = 1
-                }
-                if(y == "בינונית") {
-                    y = 2
-                }
-                if(y == "נמוכה") {
-                    y = 3
-                }
+                if(y == "גבוהה")
+                    y = 1;
+                if(y == "בינונית")
+                    y = 2;
+                if(y == "נמוכה")
+                    y = 3;
 
-                // if(x == "High") {
-                //     x = 1
-                // }
-                // if(x == "Medium") {
-                //     x = 2
-                // }
-                // if(x == "Low") {
-                //     x = 3
-                // }
-
-                // if(y == "High") {
-                //     y = 1
-                // }
-                // if(y == "Medium") {
-                //     y = 2
-                // }
-                // if(y == "Low") {
-                //     y = 3
-                // }
-
-                return (x < y) ? -1 : ((x > y) ? 1 : 0)
-
-            })
+                return (x < y) ? -1 : ((x > y) ? 1 : 0);
+            });
         }
     },
     data() {
@@ -150,11 +97,11 @@ export default {
                     value: 'urgency',
                     sortable: true
                 },
-                // {
-                //     text: 'סטאטוס',
-                //     value: 'status',
-                //     sortable: true
-                // },
+                {
+                    text: 'סטאטוס',
+                    value: 'status',
+                    sortable: true
+                },
                 {
                     text: 'שם מלא',
                     value: 'full_name',
@@ -176,7 +123,7 @@ export default {
                     sortable: false
                 },
             ],
-        }
+        };
     },
     created() {
         if(this.$props.tasks) {
@@ -184,6 +131,21 @@ export default {
         }
     },
     methods: {
+        changeStatus(item) {
+            console.log(item.status)
+            var obj = {
+                modified_on: null,
+                urgency: item.urgency,
+                status: item.status,
+                id: item._id,
+            };
+            let date = new Date();
+            let year = date.getFullYear();
+            let month = date.getMonth() + 1;
+            let day = date.getDate();
+            obj.modified_on = day + "/" + month + "/" + year;
+            this.$store.dispatch("updateTask", obj);
+        },
         checkLate(record) {
             let splitDate = record.modified_on.split('/')
             let mYear = splitDate[2]
@@ -202,10 +164,14 @@ export default {
             let duration = diff.asDays()
 
             if(duration > 14) {
-                return false
+                this.deadline_passed_sms();
+                return true;
             }
-            return false
+            return false;
         },
+      deadline_passed_sms() {
+          
+      },
       view(record) {
         this.$router.push({path: '/task/'+record._id})
       },
@@ -216,16 +182,22 @@ export default {
           this.$emit('delete', record)
       },
       getColor(urgency) {
-          if(urgency == 'נמוכה') {
-              return 'teal'
-          }
-          if(urgency == 'בינונית') {
-              return 'pink darken-2'
-          }
-          if(urgency == 'גבוהה') {
-              return 'pink'
-          }
+          if(urgency == 'נמוכה')
+              return 'teal';
+          if(urgency == 'בינונית')
+              return 'pink darken-2';
+          if(urgency == 'גבוהה')
+              return 'pink';
       }
     }
-}
+};
 </script>
+
+<style>
+.v-select__selections input { 
+  display: none;
+}
+.select {
+    min-width: 100px;
+}
+</style>
