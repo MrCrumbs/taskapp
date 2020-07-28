@@ -69,16 +69,16 @@
               <v-tab key="4">בוצע</v-tab>
 
               <v-tab-item>
-                <NewTasks v-if="tasks" @edit="edit" @delete="deleteItem" :tasks="tasks"/>
+                <NewTasks v-if="tasks" @edit-task="editTaskStatus" @edit="edit" @delete="deleteItem" :tasks="tasks"/>
               </v-tab-item>
               <v-tab-item>
-                  <TaskUnclear v-if="tasks" @edit="edit" @delete="deleteItem" :tasks="tasks"/>
+                  <TaskUnclear v-if="tasks" @edit-task="editTaskStatus" @edit="edit" @delete="deleteItem" :tasks="tasks"/>
               </v-tab-item>
               <v-tab-item>
-                <TaskNotFound v-if="tasks" @edit="edit" @delete="deleteItem" :tasks="tasks"/>
+                <TaskNotFound v-if="tasks" @edit-task="editTaskStatus" @edit="edit" @delete="deleteItem" :tasks="tasks"/>
               </v-tab-item>
               <v-tab-item>
-                <DoneTasks v-if="tasks" @edit="edit" @delete="deleteItem" :tasks="tasks"/>
+                <DoneTasks v-if="tasks" @edit-task="editTaskStatus" @edit="edit" @delete="deleteItem" :tasks="tasks"/>
               </v-tab-item>
             </v-tabs>
           <!-- </v-card> -->
@@ -456,6 +456,17 @@ import {mapActions, mapGetters} from 'vuex'
 
         this.taskToEdit.modified_on = day+"/"+month+"/"+year
 
+        this.updateTask(this.taskToEdit)
+      },
+      editTaskStatus(data) {
+        this.taskToEdit.id = data.record._id;
+        this.taskToEdit.status = data.status;
+        this.taskToEdit.urgency = data.record.urgency;
+        let date = new Date()
+        let year = date.getFullYear()
+        let month = date.getMonth()+1
+        let day = date.getDate()
+        this.taskToEdit.modified_on = day+"/"+month+"/"+year
         this.updateTask(this.taskToEdit)
       },
       deleteItem(record) {
