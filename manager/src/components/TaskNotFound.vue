@@ -75,13 +75,23 @@ export default {
             search: null,
             columns: [
                 {
-                    text: 'כותרת תקלה',
-                    value: 'title',
+                    text: 'שם מלא',
+                    value: 'full_name',
                     sortable: true
                 },
                 {
                     text: 'מיקום',
                     value: 'location',
+                    sortable: true
+                },
+                {
+                    text: 'כותרת תקלה',
+                    value: 'title',
+                    sortable: true
+                },
+                {
+                    text: 'דחיפות',
+                    value: 'urgency',
                     sortable: true
                 },
                 {
@@ -95,18 +105,8 @@ export default {
                     sortable: true
                 },
                 {
-                    text: 'דחיפות',
-                    value: 'urgency',
-                    sortable: true
-                },
-                {
                     text: 'סטאטוס',
                     value: 'status',
-                    sortable: true
-                },
-                {
-                    text: 'שם מלא',
-                    value: 'full_name',
                     sortable: true
                 },
                 {

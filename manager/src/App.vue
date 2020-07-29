@@ -4,14 +4,14 @@
     <v-app-bar flat app dense v-if="$route.path != '/login'">
       <v-app-bar-nav-icon @click="darwer = !darwer"></v-app-bar-nav-icon>
 
-      <v-toolbar-title>ממשק מנהל</v-toolbar-title>
+      <v-toolbar-title>איתורן</v-toolbar-title>
 
     </v-app-bar>
       <v-navigation-drawer v-if="$route.path != '/login'" v-model="darwer" :right="true" app class="teal" dark>
       <v-list-item>
         <v-list-item-content>
           <v-list-item-title class="title">
-            ניהול תקלות
+            איתורן
           </v-list-item-title>
           <v-list-item-subtitle>
             חשבון מנהל

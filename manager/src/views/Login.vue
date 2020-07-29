@@ -43,7 +43,6 @@ export default {
                 localStorage.setItem('taskManager', JSON.stringify(payload))
                 this.$router.push({path: '/tasks'})
             }
-            //
         }
     },
 

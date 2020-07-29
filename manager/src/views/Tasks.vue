@@ -41,6 +41,7 @@
             opacity="1"
           >
             <v-btn class="my-4" @click="overlay = !overlay" color="teal" depressed dark> <i class="fa fa-times-circle fa-2x"></i> </v-btn>
+            <v-btn class="my-4 mr-2" @click="print" color="teal" depressed dark> <i class="fa fa-print fa-2x"></i> </v-btn>
             <v-data-table
                 :headers="overcolumns"
                 :items="filteredTasks"
@@ -95,67 +96,35 @@
             </v-card-title>
             <v-card-text>
               <v-container>
-              
-                <v-form>
-              <v-row class="mx-5">
-                <v-col cols="12" sm="6" md="6">
-                  <v-text-field label="כותרת תקלה*" :rules="required" outlined v-model="task.title" clearable required></v-text-field>
-                </v-col>
-                <v-col cols="12" sm="6">
-                  <v-select
-                  :rules="required"
-                    outlined
-                    v-model="task.urgency"
-                    :items="['נמוכה', 'בינונית', 'גבוהה']"
-                    label="דחיפות*"
-                    required
-                  ></v-select>
-                </v-col>
-                <v-col cols="12" sm="6" md="6">
-                  <v-autocomplete
-                        clearable
-                        outlined
-                        @change="checkLocation"
-                        v-model="pickedLocation"
-                        :items="locations"
-                        label="מיקום*"
-                        :rules="required"
-                        
-                      ></v-autocomplete>
-                </v-col>
-                <v-col cols="12" sm="6" md="6" v-if="pickedLocation && pickedLocation == 'אחר'">
-                  <v-text-field label="מיקום*" v-model="task.location" :rules="required" clearable outlined required></v-text-field>
-                </v-col>
-                <v-col cols="12" sm="6">
-                  <v-autocomplete
-                    clearable
-                    outlined
-                    v-model="task.full_name"
-                    :items="students"
-                    :item-text="'name'"
-                    :item-value="'name'"
-                    :name="'name'"
-                    label="שם מלא*"
-                    :rules="required"
-                    return-object
-                    @change="setPhoneNumber"
-                  ></v-autocomplete>
-                </v-col>
-                <!-- <v-col cols="12" sm="6" md="6">
-                  <v-text-field label="מספר טלפון*" v-model="task.phone_number" :rules="required" clearable outlined required></v-text-field>
-                </v-col> -->
-                <v-col cols="12" sm="12" :md="pickedLocation == 'אחר' && pickedLocation ? '6' : '12' "> 
-                  <v-file-input outlined show-size label="העלאת תמונה" v-model="task.image" accept="image/*" prepend-icon="mdi-camera"></v-file-input>
-                </v-col>
-                <v-col cols="12" sm="12" md="12">
-                  <v-textarea outlined label="תיאור*" v-model="task.description" :rules="required" clearable required>
-
-                  </v-textarea>
-                </v-col>
-                
-              </v-row>
-            </v-form>
-              </v-container>
+                    <v-form>
+                        <v-row class="mx-5">
+                            <v-col cols="12" sm="6">
+                              <v-autocomplete clearable outlined v-model="task.full_name" :items="students" :item-text="'name'" :item-value="'name'" :name="'name'" label="שם מלא*" :rules="required" return-object @change="setPhoneNumber"></v-autocomplete>
+                            </v-col>
+                            <v-col cols="12" sm="6" md="6">
+                              <v-autocomplete clearable outlined @change="checkLocation" v-model="pickedLocation" :items="locations" label="מיקום*" :rules="required"></v-autocomplete>
+                            </v-col>
+                            <v-col cols="12" sm="6" md="6" v-if="pickedLocation && pickedLocation == 'אחר'">
+                              <v-text-field label="מיקום*" v-model="task.location" :rules="required" clearable outlined required></v-text-field>
+                            </v-col>
+                            <v-col cols="12" sm="6" md="6">
+                              <v-text-field label="כותרת תקלה*" :rules="required" outlined v-model="task.title" clearable required></v-text-field>
+                            </v-col>
+                            <v-col cols="12" sm="6">
+                              <v-select :rules="required" outlined v-model="task.urgency" :items="['נמוכה', 'בינונית', 'גבוהה']" label="דחיפות*" required></v-select>
+                            </v-col>
+                            <!-- <v-col cols="12" sm="6" md="6">
+                              <v-text-field label="מספר טלפון*" v-model="task.phone_number" :rules="required" clearable outlined required></v-text-field>
+                            </v-col> -->
+                            <v-col cols="12" sm="12" :md="pickedLocation == 'אחר' && pickedLocation ? '6' : '12' "> 
+                              <v-file-input outlined show-size label="העלאת תמונה" v-model="task.image" accept="image/*" prepend-icon="mdi-camera"></v-file-input>
+                            </v-col>
+                            <v-col cols="12" sm="12" md="12">
+                              <v-textarea outlined label="תיאור*" v-model="task.description" :rules="required" clearable required></v-textarea>
+                            </v-col>
+                        </v-row>
+                    </v-form>
+                </v-container>
               <small>*שדות חובה</small>
             </v-card-text>
             <v-card-actions>
@@ -345,6 +314,9 @@ import {mapActions, mapGetters} from 'vuex'
 
     methods: {
       ...mapActions(['createTask', 'fetchTasks', 'deleteTask', 'updateTask']),
+      print() {
+          window.print();
+      },
       setPhoneNumber(v) {
         if(v) {
           this.task.phone_number = v.phone

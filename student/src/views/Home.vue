@@ -26,48 +26,20 @@
             <h2 class="py-3 text-center">הוסף תקלה חדשה</h2>
             <v-form ref="form">
               <v-row class="mx-5">
-                <v-col cols="12" sm="6" md="6">
-                  <v-text-field label="כותרת תקלה*" :rules="required" outlined v-model="task.title" clearable required></v-text-field>
-                </v-col>
                 <v-col cols="12" sm="6">
-                  <v-select
-                  :rules="required"
-                    outlined
-                    v-model="task.urgency"
-                    :items="['נמוכה', 'בינונית', 'גבוהה']"
-                    label="דחיפות*"
-                    required
-                  ></v-select>
-                </v-col>
+                  <v-autocomplete clearable outlined v-model="task.full_name" :items="students" :item-text="'name'" :item-value="'name'" :name="'name'" label="שם מלא*" :rules="required" return-object @change="setPhoneNumber"></v-autocomplete>
+                </v-col> 
                 <v-col cols="12" sm="6" md="6">
-                  <v-autocomplete
-                        clearable
-                        outlined
-                        @change="checkLocation"
-                        v-model="pickedLocation"
-                        :items="locations"
-                        label="מיקום*"
-                        :rules="required"
-                        
-                      ></v-autocomplete>
+                  <v-autocomplete clearable outlined @change="checkLocation" v-model="pickedLocation" :items="locations" label="מיקום*" :rules="required"></v-autocomplete>
                 </v-col>
                 <v-col cols="12" sm="6" md="6" v-if="pickedLocation && pickedLocation == 'אחר'">
                   <v-text-field label="מיקום*" v-model="task.location" :rules="required" clearable outlined required></v-text-field>
                 </v-col>
+                <v-col cols="12" sm="6" md="6">
+                  <v-text-field label="תיאור התקלה בקצרה*" :rules="required" outlined v-model="task.title" clearable required></v-text-field>
+                </v-col>
                 <v-col cols="12" sm="6">
-                  <v-autocomplete
-                    clearable
-                    outlined
-                    v-model="task.full_name"
-                    :items="students"
-                    :item-text="'name'"
-                    :item-value="'name'"
-                    :name="'name'"
-                    label="שם מלא*"
-                    :rules="required"
-                    return-object
-                    @change="setPhoneNumber"
-                  ></v-autocomplete>
+                  <v-select :rules="required" outlined v-model="task.urgency" :items="['נמוכה', 'בינונית', 'גבוהה']" label="דחיפות*" required></v-select>
                 </v-col>
                 <!-- <v-col cols="12" sm="6" md="6">
                   <v-text-field label="מספר טלפון*" v-model="task.phone_number" :rules="required" clearable outlined required></v-text-field>
@@ -76,13 +48,9 @@
                   <v-file-input outlined show-size label="העלאת תמונה" v-model="task.image" accept="image/*" prepend-icon="mdi-camera"></v-file-input>
                 </v-col>
                 <v-col cols="12" sm="12" md="12">
-                  <v-textarea outlined label="תיאור*" v-model="task.description" :rules="required" clearable required>
-
-                  </v-textarea>
-
+                  <v-textarea outlined label="פירוט, באם יש צורך" v-model="task.description" clearable></v-textarea>
                   <v-btn color="teal" dark block @click="addTask" :disabled="isPressed">{{btnText}}</v-btn>
                 </v-col>
-                
               </v-row>
             </v-form>
           </v-card>

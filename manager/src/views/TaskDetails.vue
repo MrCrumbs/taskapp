@@ -10,12 +10,16 @@
                                 <v-img :src="getImage(task.image)" width="100" aspect-ratio="1"></v-img>
                             </v-col>
                             <v-col cols="6" sm="4" md="3">
-                                <h3>כותרת תקלה</h3>
-                                <p>{{task.title}}</p>
+                                <h3>שם מלא</h3>
+                                <p>{{task.full_name}}</p>
                             </v-col>
                             <v-col cols="6" sm="4" md="3">
                                 <h3>מיקום</h3>
                                 <p>{{task.location}}</p>
+                            </v-col>
+                            <v-col cols="6" sm="4" md="3">
+                                <h3>כותרת תקלה</h3>
+                                <p>{{task.title}}</p>
                             </v-col>
                             <v-col cols="6" sm="4" md="3">
                                 <h3>דחיפות</h3>
@@ -24,10 +28,6 @@
                             <v-col cols="6" sm="4" md="3">
                                 <h3>סטאטוס</h3>
                                 <v-chip :color="getStatusColor(task.status)" dark small>{{task.status}}</v-chip>
-                            </v-col>
-                            <v-col cols="6" sm="4" md="3">
-                                <h3>שם מלא</h3>
-                                <p>{{task.full_name}}</p>
                             </v-col>
                             <v-col cols="6" sm="4" md="3">
                                 <h3>מספר טלפון</h3>

@@ -6,7 +6,7 @@
       dark
     >
       <div class="d-flex align-center">
-        <h2>ממשק תלמיד</h2>
+        <h2>איתורן</h2>
 
         
       </div>
