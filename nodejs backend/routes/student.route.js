@@ -1,7 +1,7 @@
 module.exports = (app) => {
     const student_controller = require('../controllers/student.controller');
     const upload = require('../config/task_image.config.js');
-
+    
     // Create Student
     app.post('/api/create_student', student_controller.create_student);
 

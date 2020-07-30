@@ -5,6 +5,7 @@ import Tasks from '../views/Tasks.vue'
 import TaskDetails from '../views/TaskDetails.vue'
 import Locations from '../views/Locations.vue'
 import Students from '../views/Students.vue'
+import Settings from '../views/Settings.vue'
 
 Vue.use(VueRouter)
 
@@ -45,6 +46,14 @@ Vue.use(VueRouter)
     path: '/students',
     name: 'Students',
     component: Students,
+    meta: {
+      requiresAuth: true
+    }
+  },
+  {
+    path: '/settings',
+    name: 'Settings',
+    component: Settings,
     meta: {
       requiresAuth: true
     }

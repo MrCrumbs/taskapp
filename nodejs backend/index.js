@@ -27,7 +27,7 @@ app.use(function(req, res, next) {
 const mongoose = require('mongoose');
 // Your Mongo Atlas Cluster
 // Create a Project on Mongo Atlas and Create a Cluster and than configure it
-let dev_db_url = 'mongodb+srv://taskdb:taskdb123@cluster0.61dfi.mongodb.net/<dbname>?retryWrites=true&w=majority'
+let dev_db_url = 'mongodb+srv://taskdb:Sanford8@cluster0.61dfi.mongodb.net/<dbname>?retryWrites=true&w=majority'
 
 const mongoDB = process.env.MONGODB_URI || dev_db_url;
 mongoose.connect(mongoDB, { useNewUrlParser: true, useUnifiedTopology: true }).then(() => console.log('MongoDB connected…'))

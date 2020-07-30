@@ -25,6 +25,7 @@
 </template>
 
 <script>
+import {mapActions} from "vuex";
 export default {
     name: "Login",
     data() {
@@ -34,15 +35,10 @@ export default {
         }
     },
     methods: {
+        ...mapActions(['getManagerEntity']),
         login() {
             console.log(this.password)
-            if(this.password && this.password == 'tasktracker123') {
-                const payload = {
-                    password: this.password
-                }
-                localStorage.setItem('taskManager', JSON.stringify(payload))
-                this.$router.push({path: '/tasks'})
-            }
+            this.getManagerEntity(this.password)
         }
     },
 
