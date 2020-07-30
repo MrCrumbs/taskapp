@@ -1,12 +1,12 @@
 <template>
     <div class="mx-5 mt-3">
 
-      <v-container class="mt-10">
+      <v-container class="mt-5">
         <v-row
                 class="mb-6"
                 justify="center"
         >
-          <v-col lg="6">
+          <v-col lg="4">
             <v-card
                     class="pa-2"
                     tile
@@ -75,7 +75,7 @@
         name: "Settings",
         data() {
             return {
-              value: false,
+              value: true,
               newPassword: null,
               repeatPassword: null,
               email: null,
