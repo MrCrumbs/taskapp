@@ -214,6 +214,7 @@ import NewTasks from '@/components/New.vue'
 import TaskUnclear from '@/components/TaskUnclear.vue'
 import TaskNotFound from '@/components/TaskNotFound.vue'
 import DoneTasks from '@/components/Done.vue'
+import Swal from "sweetalert2"
 import {mapActions, mapGetters} from 'vuex'
   export default {
     components: {
@@ -402,15 +403,18 @@ import {mapActions, mapGetters} from 'vuex'
         }
         let date = new Date()
         let year = date.getFullYear()
-        let month = date.getMonth()+1
-        let day = date.getDate()
+        let month = this.addZ(date.getMonth()+1)
+        let day = this.addZ(date.getDate())
+        
         this.task.created_on = day+"/"+month+"/"+year
         this.task.modified_on = day+"/"+month+"/"+year
         //console.log(this.task)
         this.isPressed = true
 
         this.createTask(this.task);
+        Swal.fire({title: "...שומר תקלה", text: "נא המתן", showConfirmButton: false})
       },
+      addZ(n){return n<10? '0'+n:''+n;},
       view(record) {
         this.$router.push({path: '/task/1'})
       },
@@ -423,8 +427,8 @@ import {mapActions, mapGetters} from 'vuex'
       editItem() {
         let date = new Date()
         let year = date.getFullYear()
-        let month = date.getMonth()+1
-        let day = date.getDate()
+        let month = this.addZ(date.getMonth()+1)
+        let day = this.addZ(date.getDate())
 
         this.taskToEdit.modified_on = day+"/"+month+"/"+year
 
@@ -436,8 +440,8 @@ import {mapActions, mapGetters} from 'vuex'
         this.taskToEdit.urgency = data.record.urgency;
         let date = new Date()
         let year = date.getFullYear()
-        let month = date.getMonth()+1
-        let day = date.getDate()
+        let month = this.addZ(date.getMonth()+1)
+        let day = this.addZ(date.getDate())
         this.taskToEdit.modified_on = day+"/"+month+"/"+year
         this.updateTask(this.taskToEdit)
       },
@@ -470,6 +474,7 @@ import {mapActions, mapGetters} from 'vuex'
       },
       getTaskCreated(val) {
         if(val && val == 'success') {
+          Swal.close()
           this.msg = 'התקלה הוספה בהצלחה'
           this.color = 'success'
           this.added = true
@@ -478,6 +483,7 @@ import {mapActions, mapGetters} from 'vuex'
           this.fetchTasks()
         }
         if(val && val != 'success') {
+          Swal.close()
           this.msg = 'אירעה שגיאה'
           this.color = 'error'
           this.added = true

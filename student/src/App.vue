@@ -6,7 +6,7 @@
       dark
     >
       <div class="d-flex align-center">
-        <h2>איתורן</h2>
+        <h2><span class="ito">איתו</span><span class="ran">רן</span></h2>
 
         
       </div>
@@ -40,3 +40,11 @@ export default {
   },
 };
 </script>
+<style>
+.ito {
+  color: #003300 !important;
+}
+.ran {
+  color: #663300 !important;
+}
+</style>

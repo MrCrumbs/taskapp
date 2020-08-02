@@ -4,14 +4,14 @@
     <v-app-bar flat app dense v-if="$route.path != '/login'">
       <v-app-bar-nav-icon @click="darwer = !darwer"></v-app-bar-nav-icon>
 
-      <v-toolbar-title>איתורן</v-toolbar-title>
+      <v-toolbar-title><span class="ito">איתו</span><span class="ran">רן</span></v-toolbar-title>
 
     </v-app-bar>
       <v-navigation-drawer v-if="$route.path != '/login'" v-model="darwer" :right="true" app class="teal" dark>
       <v-list-item>
         <v-list-item-content>
           <v-list-item-title class="title">
-            איתורן
+            <span class="ito">איתו</span><span class="ran">רן</span>
           </v-list-item-title>
           <v-list-item-subtitle>
             חשבון מנהל
@@ -115,5 +115,11 @@ import {mapActions} from 'vuex'
 }
 .text-white {
   color: #fff !important;
+}
+.ito {
+  color: #003300 !important;
+}
+.ran {
+  color: #663300 !important;
 }
 </style>

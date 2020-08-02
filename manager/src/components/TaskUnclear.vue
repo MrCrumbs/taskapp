@@ -12,6 +12,15 @@
             <template v-slot:item.title="{ item }">
               <span :class="checkLate(item) ? 'back-red' : ''">{{item.title}}</span>
             </template>
+            <template v-slot:item.full_name="{ item }">
+              <span :class="checkLate(item) ? 'back-red' : ''">{{item.full_name}}</span>
+            </template>
+            <template v-slot:item.description="{ item }">
+              <span :class="checkLate(item) ? 'back-red' : ''">{{item.description}}</span>
+            </template>
+            <template v-slot:item.phone_number="{ item }">
+              <span :class="checkLate(item) ? 'back-red' : ''">{{item.phone_number}}</span>
+            </template>
             <template v-slot:item.location="{ item }">
               <span :class="checkLate(item) ? 'back-red' : ''">{{item.location}}</span>
             </template>
@@ -22,9 +31,6 @@
               <span :class="checkLate(item) ? 'back-red' : ''">{{item.modified_on}}</span>
             </template>
             <template v-slot:item.status="{ item }">
-              <!-- <v-chip :color="item.status == 'New' ? 'purple' : 'orange'" dark small>{{item.status}}</v-chip> -->
-              <!-- <v-select v-model="item.status" @change="changeStatus(item)" :items="['חדש', 'התקלה לא ברורה', 'התקלה לא נמצאה', 'טיפול מתמשך', 'בוצע']" chips></v-select> -->
-              <!-- <v-select v-model="item.status" v-on:change="updateTaskStatus($event,item)" :items="['חדש', 'התקלה לא ברורה', 'התקלה לא נמצאה', 'טיפול מתמשך', 'בוצע']" :key="'status_select_list'+item._id" :menu-props="{ top: true, offsetY: true,maxHeight: '400' }"  label="סטאטוס" dense solo></v-select> -->
               <v-select v-model="item.status" v-on:change="updateTaskStatus($event,item)" :items="['חדש', 'התקלה לא ברורה', 'התקלה לא נמצאה', 'טיפול מתמשך', 'בוצע']" :key="'status_select_list'+item._id" chips></v-select>
             </template>
             <template v-slot:item.actions="{ item }">
@@ -136,23 +142,8 @@ export default {
         updateTaskStatus(event, record){
             this.$emit('edit-task', {'record': record,'status': event});
         },
-        changeStatus(item) {
-            console.log(item.status)
-            var obj = {
-                modified_on: null,
-                urgency: item.urgency,
-                status: item.status,
-                id: item._id,
-            };
-            let date = new Date();
-            let year = date.getFullYear();
-            let month = date.getMonth() + 1;
-            let day = date.getDate();
-            obj.modified_on = day + "/" + month + "/" + year;
-            this.$store.dispatch("updateTask", obj);
-        },
         checkLate(record) {
-            let splitDate = record.modified_on.split('/')
+            let splitDate = record.created_on.split('/')
             let mYear = splitDate[2]
             let mMonth = splitDate[1]
             let mDay = splitDate[0]
@@ -161,21 +152,16 @@ export default {
             
             let date = new Date()
             let year = date.getFullYear()
-            let month = date.getMonth()+1
-            let day = date.getDate()
+            let month = this.addZ(date.getMonth()+1)
+            let day = this.addZ(date.getDate())
             let dd = year+"-"+month+"-"+day
             let current = moment(dd)
             let diff = moment.duration(current.diff(modified_date))
             let duration = diff.asDays()
 
-            if(duration > 14) {
-                this.deadline_passed_sms();
-                return true;
-            }
-            return false;
+            return duration >= 14;
         },
-        deadline_passed_sms(){
-        },
+        addZ(n){return n<10? '0'+n:''+n;}, 
         view(record) {
             this.$router.push({path: '/task/'+record._id});
         },
