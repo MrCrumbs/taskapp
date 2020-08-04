@@ -22,6 +22,28 @@ const actions = {
             }
         }).catch(err => console.log('error occurred while updating password', err.message))
     },
+    
+    // UPDATE manager email or num
+    updateManagerEmailOrNum({commit}, payload) {
+        axios.put(baseURL+'update_manager_email_or_number', payload).then(result => {
+            if(result.data.status === 'success') {
+                commit('setManager', result.data.data)
+            } else {
+                Swal.fire('שגיאה', 'אירעה שגיאה בשמירת הרשומה', 'error')
+            }
+        }).catch(err => console.log('error occurred while updating email or number', err.message))
+    },
+
+    // DELETE manager email or num
+    deleteManagerEmailOrNum({commit}, payload) {
+        axios.put(baseURL+'delete_manager_email_or_number', payload).then(result => {
+            if(result.data.status === 'success') {
+                commit('setManager', result.data.data)
+            } else {
+                Swal.fire('שגיאה','אירעה שגיאה במחיקת הרשומה','error')
+            }
+        }).catch(err => console.log('error occurred while deleting email or number', err.message))
+    },
 
     // Get manager upon password match
     getManagerEntity({commit}, payload) {
@@ -43,11 +65,6 @@ const actions = {
         axios.put(baseURL+'add_manager_email_and_number/'+id, payload).then(result => {
             if(result.data.status === 'success') {
                 commit('setManager', result.data.data)
-                if (payload.email) {
-                    Swal.fire('בוצע', 'כתובת מייל נשמרה בהצלחה!', 'success')
-                } else {
-                    Swal.fire('בוצע', 'מספר טלפון נשמר בהצלחה!', 'success')
-                }
             } else {
                 Swal.fire('שגיאה', 'אירעה שגיאה בתהליך השמירה', 'error')
             }

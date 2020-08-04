@@ -1,5 +1,5 @@
 <template>
-    <div class="task-unclear">
+    <div class="task-unclearnotfound">
         <v-row>
         <v-col cols="12">
           <v-data-table :headers="columns" :items="newTasks" class="elevation-1" :search="search" :footer-props="{'itemsPerPageText':'שורות לעמוד'}">
@@ -16,10 +16,10 @@
               <span :class="checkLate(item) ? 'back-red' : ''">{{item.full_name}}</span>
             </template>
             <template v-slot:item.description="{ item }">
-              <span :class="checkLate(item) ? 'back-red' : ''">{{item.description}}</span>
+              <span :class="checkLate(item) ? 'back-red' : ''">{{item.description!="null" ? item.description : "(ללא)"}}</span>
             </template>
             <template v-slot:item.phone_number="{ item }">
-              <span :class="checkLate(item) ? 'back-red' : ''">{{item.phone_number}}</span>
+              <span :class="checkLate(item) ? 'back-red' : ''">{{item.phone_number!="undefined" ? item.phone_number : "(ללא)"}}</span>
             </template>
             <template v-slot:item.location="{ item }">
               <span :class="checkLate(item) ? 'back-red' : ''">{{item.location}}</span>
@@ -31,7 +31,7 @@
               <span :class="checkLate(item) ? 'back-red' : ''">{{item.modified_on}}</span>
             </template>
             <template v-slot:item.status="{ item }">
-              <v-select v-model="item.status" v-on:change="updateTaskStatus($event,item)" :items="['חדש', 'התקלה לא ברורה', 'התקלה לא נמצאה', 'טיפול מתמשך', 'בוצע']" :key="'status_select_list'+item._id" chips></v-select>
+              <v-select v-model="item.status" v-on:change="updateTaskStatus($event,item)" :items="['חדש', 'לא ברור / לא נמצא', 'טיפול מתמשך', 'בוצע']" :key="'status_select_list'+item._id" chips></v-select>
             </template>
             <template v-slot:item.actions="{ item }">
               <v-icon small class="mr-2" @click="view(item)">mdi-eye</v-icon>
@@ -47,32 +47,40 @@
 <script>
 import moment from "moment";
 export default {
-    name: "TaskUnclear",
+    name: "TaskUnclearNotFound",
     props: {
         tasks: Array
     },
     computed: {
         newTasks() {
-            let tasks = this.$props.tasks.filter(task => task.status == 'התקלה לא ברורה');
+            let tasks = this.$props.tasks.filter(task => task.status == 'לא ברור / לא נמצא');
             return tasks.sort((a,b) => { 
                 let x = a.urgency;
+                let xx = this.checkLate(a);
                 let y = b.urgency;
-
-                if(x == "גבוהה")
-                    x = 1;
-                if(x == "בינונית")
-                    x = 2;
-                if(x == "נמוכה")
-                    x = 3;
-
-                if(y == "גבוהה")
-                    y = 1;
-                if(y == "בינונית")
-                    y = 2;
-                if(y == "נמוכה")
-                    y = 3;
-
-                return (x < y) ? -1 : ((x > y) ? 1 : 0);
+                let yy = this.checkLate(b);
+                
+                if(xx && !yy)
+                    return -1;
+                else if(!xx && yy)
+                    return 1;
+                else{
+                    if(x == "גבוהה")
+                        x = 1;
+                    else if(x == "בינונית")
+                        x = 2;
+                    else if(x == "נמוכה")
+                        x = 3;
+                    
+                    if(y == "גבוהה")
+                        y = 1;
+                    else if(y == "בינונית")
+                        y = 2;
+                    else if(y == "נמוכה")
+                        y = 3;
+                    
+                    return (x < y) ? -1 : ((x > y) ? 1 : 0);
+                }
             });
         }
     },
@@ -175,7 +183,7 @@ export default {
             if(urgency == 'נמוכה')
               return 'teal';
             else if(urgency == 'בינונית')
-              return 'pink darken-2';
+              return 'orange';
             else if(urgency == 'גבוהה')
               return 'pink';
         }

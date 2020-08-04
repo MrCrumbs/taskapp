@@ -65,18 +65,14 @@
           <!-- <v-card class="pb-5"> -->
             <v-tabs grow color="teal" v-model="tab" @change="checkTab">
               <v-tab key="1">חדש</v-tab>
-              <v-tab key="2">תקלה לא ברורה</v-tab>
-              <v-tab key="3">תקלה לא נמצאה</v-tab>
-              <v-tab key="4">בוצע</v-tab>
+              <v-tab key="2">לא ברור / לא נמצא</v-tab>
+              <v-tab key="3">בוצע</v-tab>
 
               <v-tab-item>
                 <NewTasks v-if="tasks" @edit-task="editTaskStatus" @edit="edit" @delete="deleteItem" :tasks="tasks"/>
               </v-tab-item>
               <v-tab-item>
-                  <TaskUnclear v-if="tasks" @edit-task="editTaskStatus" @edit="edit" @delete="deleteItem" :tasks="tasks"/>
-              </v-tab-item>
-              <v-tab-item>
-                <TaskNotFound v-if="tasks" @edit-task="editTaskStatus" @edit="edit" @delete="deleteItem" :tasks="tasks"/>
+                  <TaskUnclearNotFound v-if="tasks" @edit-task="editTaskStatus" @edit="edit" @delete="deleteItem" :tasks="tasks"/>
               </v-tab-item>
               <v-tab-item>
                 <DoneTasks v-if="tasks" @edit-task="editTaskStatus" @edit="edit" @delete="deleteItem" :tasks="tasks"/>
@@ -163,7 +159,7 @@
                       <v-select
                         v-model="taskToEdit.status"
                         outlined
-                        :items="['חדש', 'התקלה לא ברורה', 'התקלה לא נמצאה', 'טיפול מתמשך', 'בוצע']"
+                        :items="['חדש', 'לא ברור / לא נמצא', 'טיפול מתמשך', 'בוצע']"
                         label="סטאטוס"
                         required
                       ></v-select>
@@ -211,16 +207,14 @@
 
 <script>
 import NewTasks from '@/components/New.vue'
-import TaskUnclear from '@/components/TaskUnclear.vue'
-import TaskNotFound from '@/components/TaskNotFound.vue'
+import TaskUnclearNotFound from '@/components/TaskUnclearNotFound.vue'
 import DoneTasks from '@/components/Done.vue'
 import Swal from "sweetalert2"
 import {mapActions, mapGetters} from 'vuex'
   export default {
     components: {
       NewTasks,
-      TaskUnclear,
-      TaskNotFound,
+      TaskUnclearNotFound,
       DoneTasks
     },
     data() {
@@ -331,25 +325,19 @@ import {mapActions, mapGetters} from 'vuex'
       },
       filterTasksByStatus(v) {
         if(this.tasks) {
-          if(v < 1) {  
+          if(v == 0) {  
             this.filteredTasks = this.tasks.filter(task => task.status == 'חדש' || task.status == 'טיפול מתמשך')
             let filtered = this.filteredTasks
             this.sortTasks(filtered)
             console.log(this.filteredTasks)
           }
-          if(v == 1) {
-            this.filteredTasks = this.tasks.filter(task => task.status == 'התקלה לא ברורה')
+          else if(v == 1) {
+            this.filteredTasks = this.tasks.filter(task => task.status == 'לא ברור / לא נמצא')
             let filtered = this.filteredTasks
             this.sortTasks(filtered)
             console.log(this.filteredTasks)
           }
-          if(v == 2) {
-            this.filteredTasks = this.tasks.filter(task => task.status == 'התקלה לא נמצאה')
-            let filtered = this.filteredTasks
-            this.sortTasks(filtered)
-            console.log(this.filteredTasks)
-          }
-          if(v == 3) {
+          else if(v == 2) {
             this.filteredTasks = this.tasks.filter(task => task.status == 'בוצע')
             let filtered = this.filteredTasks
             this.sortTasks(filtered)
@@ -397,7 +385,7 @@ import {mapActions, mapGetters} from 'vuex'
         // }
       },
       addTask() {
-        if(this.task.title == null || this.task.title == '' || this.task.urgency == null || this.task.urgency == '' || this.task.location == null || this.task.location == '' || this.task.full_name == null || this.task.full_name == '' || this.task.phone_number == null || this.task.phone_number == '' || this.task.description == null || this.task.description == '')
+        if(this.task.title == null || this.task.title == '' || this.task.urgency == null || this.task.urgency == '' || this.task.location == null || this.task.location == '' || this.task.full_name == null || this.task.full_name == '' || this.task.description == null || this.task.description == '')
         {
           return
         }

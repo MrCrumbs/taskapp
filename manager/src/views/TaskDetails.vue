@@ -31,7 +31,7 @@
                             </v-col>
                             <v-col cols="6" sm="4" md="3">
                                 <h3>מספר טלפון</h3>
-                                <p>{{task.phone_number}}</p>
+                                <p>{{task.phone_number!="undefined" ? task.phone_number : "(ללא)"}}</p>
                             </v-col>
                             <v-col cols="6" sm="4" md="3">
                                 <h3>ת. יצירה</h3>
@@ -43,7 +43,7 @@
                             </v-col>
                             <v-col cols="12">
                                 <h3>תיאור</h3>
-                                <p>{{task.description}}</p>
+                                <p>{{task.description!="null" ? task.description : "(ללא)"}}</p>
                             </v-col>
                         </v-row>
                     </v-card>
@@ -86,16 +86,13 @@ export default {
             if(status == 'חדש') {
                 return 'purple'
             }
-            if(status == 'טיפול מתמשך') {
+            else if(status == 'טיפול מתמשך') {
                 return 'orange'
             }
-            if(status == 'התקלה לא ברורה') {
+            else if(status == 'לא ברור / לא נמצא') {
                 return 'info'
             }
-            if(status == 'התקלה לא נמצאה') {
-                return 'brown'
-            }
-            if(status == 'בוצע') {
+            else if(status == 'בוצע') {
                 return 'success'
             }
         },
@@ -104,7 +101,7 @@ export default {
               return 'teal'
           }
           if(urgency == 'בינונית') {
-              return 'pink darken-2'
+              return 'orange'
           }
           if(urgency == 'גבוהה') {
               return 'pink'

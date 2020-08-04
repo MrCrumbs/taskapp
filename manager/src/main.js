@@ -6,7 +6,7 @@ import router from './router'
 import vuetify from './plugins/vuetify';
 import store from './store'
 import Vuetify from 'vuetify'
-
+window.Vue = Vue;
 Vue.use(Vuetify, {
   rtl: true
 })

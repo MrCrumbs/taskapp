@@ -139,7 +139,7 @@ export default {
       },
       addZ(n){return n<10? '0'+n:''+n;},
     addTask() {
-      if(this.task.title == null || this.task.title == '' || this.task.urgency == null || this.task.urgency == '' || this.task.location == null || this.task.location == '' || this.task.full_name == null || this.task.full_name == '' || this.task.phone_number == null || this.task.phone_number == '' || this.task.description == null || this.task.description == '')
+      if(this.task.title == null || this.task.title == '' || this.task.urgency == null || this.task.urgency == '' || this.task.location == null || this.task.location == '' || this.task.full_name == null || this.task.full_name == '')
       {
         return
       }
