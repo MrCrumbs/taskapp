@@ -69,17 +69,28 @@ const actions = {
     updateTask({commit}, payload) {
         let id = payload.id
         delete payload.id
+        let changed = payload.changed
+        delete payload.changed
+        console.log("Changed: " + changed.toString());
+        console.log("phone number: " + payload.phone_number);
         commit('setTaskUpdated', null)
         axios.put(baseURL+'update_task/'+id, payload).then(result => {
             if(result.data.status == 'success') {
                 commit('setTaskUpdated', 'success')
-
-                // sendStatusUpdateSMS()
+                if(changed && payload.status != "חדש" && payload.phone_number && payload.phone_number!="undefined"){
+                    console.log("About to send SMS Post request");
+                    axios.post(baseURL+"send_sms_to_student", payload).then(result => {
+                        if(result.data.status == "success")
+                            console.log("Successful SMS request");
+                        else
+                            console.log("Error sending SMS request");
+                    }).catch(err => console.log("Error Sending SMS request", err.message))
+                }
             }
             else {
                 commit('setTaskUpdated', 'failed')
             }
-        }).catch(err => commit('setTaskDeleted', err.message))
+        }).catch(err => commit('setTaskUpdated', err.message))
     }
 }
 

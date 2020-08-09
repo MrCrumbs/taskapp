@@ -91,7 +91,7 @@
             </v-card-title>
             <v-card-text>
               <v-container>
-                <v-form>
+                <v-form ref="form">
                   <v-row>
                     <v-col cols="12" sm="12" md="12">
                       <v-text-field label="מיקום*" v-model="location.name" :rules="required" outlined clearable required></v-text-field>
@@ -226,11 +226,6 @@
           return
         }
         this.isPressed = true
-        let date = new Date()
-        let year = date.getFullYear()
-        let month = date.getMonth()+1
-        let day = date.getDate()
-        this.location.created_on = day+"/"+month+"/"+year
         this.createLocation(this.location)
       },
       edit(record) {
@@ -281,6 +276,7 @@
           this.dialog = false
           this.location.name = null
           this.isPressed = false
+          this.$refs.form.reset()
           this.fetchLocations()
         }
         if(val && val != 'success') {

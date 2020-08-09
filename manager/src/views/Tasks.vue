@@ -24,7 +24,7 @@
           <h2 class="">תקלות</h2>
         </v-col>
         <v-col>
-          <v-btn class="float-left" outlined color="teal" @click="dialog = !dialog"><i class="fa fa-plus ml-2"></i> הוסף תקלה</v-btn>
+          <v-btn class="float-left" outlined color="teal" @click="dialog = !dialog"><i class="fa fa-plus ml-2"></i>הוסף תקלה</v-btn>
           <v-btn class="float-left ml-2" dark depressed color="teal" @click="overlay = !overlay"><i class="fa fa-print ml-2"></i> תצוגת הדפסה</v-btn>
         </v-col>
       </v-row>
@@ -64,9 +64,9 @@
         <v-col cols="12">
           <!-- <v-card class="pb-5"> -->
             <v-tabs grow color="teal" v-model="tab" @change="checkTab">
-              <v-tab key="1">חדש</v-tab>
-              <v-tab key="2">לא ברור / לא נמצא</v-tab>
-              <v-tab key="3">בוצע</v-tab>
+              <v-tab style="font-weight: bold" key="1">חדש</v-tab>
+              <v-tab style="font-weight: bold" key="2">לא ברור / לא נמצא</v-tab>
+              <v-tab style="font-weight: bold" key="3">בוצע</v-tab>
 
               <v-tab-item>
                 <NewTasks v-if="tasks" @edit-task="editTaskStatus" @edit="edit" @delete="deleteItem" :tasks="tasks"/>
@@ -92,7 +92,7 @@
             </v-card-title>
             <v-card-text>
               <v-container>
-                    <v-form>
+                    <v-form ref="form">
                         <v-row class="mx-5">
                             <v-col cols="12" sm="6">
                               <v-autocomplete clearable outlined v-model="task.full_name" :items="students" :item-text="'name'" :item-value="'name'" :name="'name'" label="שם מלא*" :rules="required" return-object @change="setPhoneNumber"></v-autocomplete>
@@ -408,8 +408,12 @@ import {mapActions, mapGetters} from 'vuex'
       },
       edit(record) {
         this.taskToEdit.id = record._id
+        this.taskToEdit.old_status = record.status
         this.taskToEdit.status = record.status
         this.taskToEdit.urgency = record.urgency
+        this.taskToEdit.phone_number = record.phone_number;
+        this.taskToEdit.full_name = record.full_name;
+        this.taskToEdit.title = record.title;
         this.editDialog = true
       },
       editItem() {
@@ -417,15 +421,19 @@ import {mapActions, mapGetters} from 'vuex'
         let year = date.getFullYear()
         let month = this.addZ(date.getMonth()+1)
         let day = this.addZ(date.getDate())
-
+        this.taskToEdit.changed = (this.taskToEdit.old_status != this.taskToEdit.status) ? true : false;
         this.taskToEdit.modified_on = day+"/"+month+"/"+year
-
+        console.log(this.taskToEdit);
         this.updateTask(this.taskToEdit)
       },
       editTaskStatus(data) {
         this.taskToEdit.id = data.record._id;
-        this.taskToEdit.status = data.status;
+        this.taskToEdit.changed = true;
+        this.taskToEdit.status = data.record.status;
         this.taskToEdit.urgency = data.record.urgency;
+        this.taskToEdit.phone_number = data.record.phone_number;
+        this.taskToEdit.full_name = data.record.full_name;
+        this.taskToEdit.title = data.record.title;
         let date = new Date()
         let year = date.getFullYear()
         let month = this.addZ(date.getMonth()+1)
@@ -468,6 +476,7 @@ import {mapActions, mapGetters} from 'vuex'
           this.added = true
           this.isPressed = false
           this.dialog = false
+          this.$refs.form.reset()
           this.fetchTasks()
         }
         if(val && val != 'success') {

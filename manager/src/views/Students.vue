@@ -103,7 +103,7 @@
             </v-card-title>
             <v-card-text>
               <v-container>
-                <v-form>
+                <v-form ref="form">
                   <v-row>
                     <v-col cols="12" sm="6" md="6">
                       <v-text-field :label="ID" v-model="student.student_id" :rules="required" outlined clearable required></v-text-field>
@@ -370,6 +370,7 @@ import {mapActions, mapGetters} from 'vuex'
           this.dialog = false
           this.student.name = null
           this.isPressed = false
+          this.$refs.form.reset()
           this.fetchStudents()
         }
         if(val && val != 'success') {

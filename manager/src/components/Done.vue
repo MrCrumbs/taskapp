@@ -10,25 +10,25 @@
               <v-chip :color="getColor(item.urgency)" dark small>{{item.urgency}}</v-chip>
             </template>
             <template v-slot:item.title="{ item }">
-              <span :class="checkLate(item) ? 'back-red' : ''">{{item.title}}</span>
+              <span>{{item.title}}</span>
             </template>
             <template v-slot:item.full_name="{ item }">
-              <span :class="checkLate(item) ? 'back-red' : ''">{{item.full_name}}</span>
+              <span>{{item.full_name}}</span>
             </template>
             <template v-slot:item.description="{ item }">
-              <span :class="checkLate(item) ? 'back-red' : ''">{{item.description!="null" ? item.description : "(ללא)"}}</span>
+              <span>{{item.description!="null" ? item.description : "(ללא)"}}</span>
             </template>
             <template v-slot:item.phone_number="{ item }">
-              <span :class="checkLate(item) ? 'back-red' : ''">{{item.phone_number!="undefined" ? item.phone_number : "(ללא)"}}</span>
+              <span>{{item.phone_number!="undefined" ? item.phone_number : "(ללא)"}}</span>
             </template>
             <template v-slot:item.location="{ item }">
-              <span :class="checkLate(item) ? 'back-red' : ''">{{item.location}}</span>
+              <span>{{item.location}}</span>
             </template>
              <template v-slot:item.created_on="{ item }">
-              <span :class="checkLate(item) ? 'back-red' : ''">{{item.created_on}}</span>
+              <span>{{item.created_on}}</span>
             </template>
             <template v-slot:item.modified_on="{ item }">
-              <span :class="checkLate(item) ? 'back-red' : ''">{{item.modified_on}}</span>
+              <span>{{item.modified_on}}</span>
             </template>
             <template v-slot:item.status="{ item }">
               <v-select v-model="item.status" v-on:change="updateTaskStatus($event,item)" :items="['חדש', 'לא ברור / לא נמצא', 'טיפול מתמשך', 'בוצע']" :key="'status_select_list'+item._id" chips></v-select>
@@ -150,42 +150,22 @@ export default {
         updateTaskStatus(event, record){
             this.$emit('edit-task', {'record': record,'status': event});
         },
-        checkLate(record) {
-            let splitDate = record.created_on.split('/')
-            let mYear = splitDate[2]
-            let mMonth = splitDate[1]
-            let mDay = splitDate[0]
-            let pastDate = mYear+'-'+mMonth+'-'+mDay
-            let modified_date = moment(pastDate)
-            
-            let date = new Date()
-            let year = date.getFullYear()
-            let month = this.addZ(date.getMonth()+1)
-            let day = this.addZ(date.getDate())
-            let dd = year+"-"+month+"-"+day
-            let current = moment(dd)
-            let diff = moment.duration(current.diff(modified_date))
-            let duration = diff.asDays()
-
-            return duration >= 14;
+        view(record) {
+            this.$router.push({path: '/task/'+record._id})
         },
-        addZ(n){return n<10? '0'+n:''+n;}, 
-      view(record) {
-        this.$router.push({path: '/task/'+record._id})
-      },
-      edit(record) {
-        this.$emit('edit', record)
-      },
-      deleteItem(record) {
-          this.$emit('delete', record)
-      },
-      getColor(urgency) {
-          if(urgency == 'נמוכה')
-              return 'teal';
-          if(urgency == 'בינונית')
-              return 'orange';
-          if(urgency == 'גבוהה')
-              return 'pink';
+        edit(record) {
+            this.$emit('edit', record)
+        },
+        deleteItem(record) {
+            this.$emit('delete', record)
+        },
+        getColor(urgency) {
+            if(urgency == 'נמוכה')
+                return 'teal';
+            else if(urgency == 'בינונית')
+                return 'orange';
+            else if(urgency == 'גבוהה')
+                return 'pink';
       }
     }
 };
