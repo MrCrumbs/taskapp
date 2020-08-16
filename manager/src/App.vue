@@ -61,7 +61,8 @@ import {mapActions} from 'vuex'
           { title: 'תקלות', icon: 'mdi-medical-bag', route: '/tasks' },
           { title: 'תלמידים', icon: 'mdi-account-group', route: '/students' },
           { title: 'מיקומים', icon: 'mdi-map-marker-multiple', route: '/locations' },
-          { title: 'הגדרות', icon: 'mdi-cog', route: '/settings' }, //settings
+          { title: 'הגדרות', icon: 'mdi-cog', route: '/settings' },
+          { title: 'פח תקלות', icon: 'mdi-trash-can', route: '/recycleBin' },
           { title: 'התנתק', icon: 'mdi-power', route: '/login' },
         ],
       }

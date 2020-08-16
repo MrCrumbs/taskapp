@@ -31,12 +31,13 @@
               <span :class="checkLate(item) ? 'back-red' : ''">{{item.modified_on}}</span>
             </template>
             <template v-slot:item.status="{ item }">
-              <v-select v-model="item.status" v-on:change="updateTaskStatus($event,item)" :items="['חדש', 'לא ברור / לא נמצא', 'טיפול מתמשך', 'בוצע']" :key="'status_select_list'+item._id" chips></v-select>
+              <v-chip v-if="deleted" small>{{item.status}}</v-chip>
+              <v-select v-if="!deleted" v-model="item.status" v-on:change="updateTaskStatus($event,item)" :items="['חדש', 'לא ברור / לא נמצא', 'טיפול מתמשך', 'בוצע']" :key="'status_select_list'+item._id" chips></v-select>
             </template>
             <template v-slot:item.actions="{ item }">
               <v-icon small class="mr-2" @click="view(item)">mdi-eye</v-icon>
-              <v-icon small class="mr-2" @click="edit(item)">mdi-pencil</v-icon>
-              <v-icon small class="mr-2" @click="deleteItem(item)">mdi-delete</v-icon>
+              <v-icon small class="mr-2" v-if="!deleted" @click="edit(item)">mdi-pencil</v-icon>
+              <v-icon small class="mr-2" v-if="!deleted" @click="deleteItem(item)">mdi-delete</v-icon>
             </template>
             </v-data-table>
         </v-col>
@@ -49,7 +50,8 @@ import moment from "moment";
 export default {
     name: "TaskUnclearNotFound",
     props: {
-        tasks: Array
+        tasks: Array,
+        deleted: false
     },
     computed: {
         newTasks() {
@@ -151,6 +153,8 @@ export default {
             this.$emit('edit-task', {'record': record,'status': event});
         },
         checkLate(record) {
+            if(record.deleted)
+                return false;
             let splitDate = record.created_on.split('/')
             let mYear = splitDate[2]
             let mMonth = splitDate[1]

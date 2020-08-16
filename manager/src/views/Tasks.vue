@@ -200,6 +200,33 @@
             </v-card-actions>
           </v-card>
         </v-dialog>
+        </v-row>
+
+      <!--        dialog for loader-->
+      <v-row justify="center">
+      <v-dialog v-model="load" persistent max-width="400px">
+        <v-card>
+          <v-card-text>
+            <v-container>
+              <v-row>
+                <v-col cols="12" class="text-center">
+                  <h4>שומר תקלה</h4>
+                  <h5>נא המתן...</h5>
+                  <v-progress-linear
+                          color="#009688"
+                          indeterminate
+                          rounded
+                          height="6"
+                  ></v-progress-linear>
+                </v-col>
+              </v-row>
+            </v-container>
+          </v-card-text>
+          <v-card-actions>
+            <v-spacer></v-spacer>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
   </v-row>
         
     </div>
@@ -210,7 +237,8 @@ import NewTasks from '@/components/New.vue'
 import TaskUnclearNotFound from '@/components/TaskUnclearNotFound.vue'
 import DoneTasks from '@/components/Done.vue'
 import Swal from "sweetalert2"
-import {mapActions, mapGetters} from 'vuex'
+import {mapActions, mapGetters, mapState} from 'vuex'
+import axios from "axios";
   export default {
     components: {
       NewTasks,
@@ -234,6 +262,7 @@ import {mapActions, mapGetters} from 'vuex'
             msg: null,
             tasks: null,
             filteredTasks: null,
+            load: false,
             taskToEdit: {
               id: null,
               status: null,
@@ -277,9 +306,17 @@ import {mapActions, mapGetters} from 'vuex'
             ],
         }
     },
-
+    created() {
+      this.fetchTasks()
+      this.unsubscribe = this.$store.subscribe((mutation, state) => {
+        if (mutation.type === 'setLoader') {
+          this.load = this.$store.getters.getLoader
+        }
+      });
+    },
     computed: {
-      ...mapGetters(['getTasks', 'getTaskCreated', 'getTaskDeleted', 'getTaskUpdated', 'getLocations', 'getStudents']),
+      ...mapGetters(['getTasks', 'getTaskCreated', 'getTaskDeleted', 'getTaskUpdated', 'getLocations', 'getStudents','getLoader']),
+      ...mapState(['loader']),
       locations() {
         let locs = []
         if(this.getLocations) {
@@ -404,7 +441,8 @@ import {mapActions, mapGetters} from 'vuex'
         //console.log(this.task)
         this.isPressed = true
         this.createTask(this.task);
-        Swal.fire({title: "...שומר תקלה", text: "נא המתן", showConfirmButton: false})
+        this.loaderValues = 0
+        // Swal.fire({title: "...שומר תקלה", text: "נא המתן", showConfirmButton: false})
       },
       addZ(n){return n<10? '0'+n:''+n;},
       view(record) {
@@ -418,7 +456,8 @@ import {mapActions, mapGetters} from 'vuex'
         this.taskToEdit.phone_number = record.phone_number;
         this.taskToEdit.full_name = record.full_name;
         this.taskToEdit.title = record.title;
-        this.editDialog = true
+        this.taskToEdit.deleted = record.deleted;
+        this.editDialog = true;
       },
       editItem() {
         let date = new Date()
@@ -438,6 +477,7 @@ import {mapActions, mapGetters} from 'vuex'
         this.taskToEdit.phone_number = data.record.phone_number;
         this.taskToEdit.full_name = data.record.full_name;
         this.taskToEdit.title = data.record.title;
+        this.taskToEdit.deleted = data.record.deleted
         let date = new Date()
         let year = date.getFullYear()
         let month = this.addZ(date.getMonth()+1)
@@ -457,14 +497,10 @@ import {mapActions, mapGetters} from 'vuex'
       },
     },
 
-    created() {
-      this.fetchTasks()
-    },
-
     watch: {
       getTasks(val) {
         if(val) {
-          this.tasks = val
+          this.tasks = val.filter((item => { return !item.deleted }))
           //if(this.tasks) {
             this.filterTasksByStatus(this.currentTab)
           //}
@@ -518,6 +554,9 @@ import {mapActions, mapGetters} from 'vuex'
           this.msg = 'אירעה שגיאה'
         }
       },
+    },
+    beforeDestroy() {
+      this.unsubscribe();
     }
   }
 </script>

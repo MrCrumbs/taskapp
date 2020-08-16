@@ -6,6 +6,7 @@ import TaskDetails from '../views/TaskDetails.vue'
 import Locations from '../views/Locations.vue'
 import Students from '../views/Students.vue'
 import Settings from '../views/Settings.vue'
+import RecycleBin from "../views/RecycleBin";
 
 Vue.use(VueRouter)
 
@@ -58,6 +59,14 @@ Vue.use(VueRouter)
       requiresAuth: true
     }
   },
+  {
+      path: '/recycleBin',
+      name: 'RecycleBin',
+      component: RecycleBin,
+      meta: {
+        requiresAuth: true
+      }
+    },
   {
     path: '/login',
     name: 'Login',

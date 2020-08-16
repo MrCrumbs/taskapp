@@ -8,13 +8,15 @@ export default new Vuex.Store({
   state: {
     locations: null,
     students: null,
-    isTaskCreated: null
+    isTaskCreated: null,
+    loader: false
   },
   
   getters: {
     getLocations: state => state.locations,
     getStudents: state => state.students,
-    getTaskCreated: state => state.isTaskCreated
+    getTaskCreated: state => state.isTaskCreated,
+    getLoader: state => state.loader
   },
   actions: {
     fetchLocations({commit}) {
@@ -35,7 +37,9 @@ export default new Vuex.Store({
     },
 
     createTask({commit}, payload) {
-      commit('setTaskCreated', null)
+      commit('setTaskCreated', null);
+      console.log("Setting loader true");
+      commit('setLoader', true);
       let formData = new FormData();
       formData.append('title', payload.title)
       formData.append('urgency', payload.urgency)
@@ -51,17 +55,22 @@ export default new Vuex.Store({
       }
       axios.post(baseURL+'create_task', formData).then(result => {
         if(result.data.status == 'success') {
-          commit('setTaskCreated', 'success')
+            commit('setLoader', false);
+          commit('setTaskCreated', 'success');
         }
         else {
-          commit('setTaskCreated', 'failed')
+          commit('setLoader', false);
+          commit('setTaskCreated', 'failed');
         }
-      }).catch(err => commit('setTaskCreated', 'failed'))
+      }).catch(err => {commit('setLoader', false);commit('setTaskCreated', 'failed')})
     }
   },
   mutations: {
     setLocations: (state, payload) => state.locations = payload,
     setStudents: (state, payload) => state.students = payload,
-    setTaskCreated: (state, payload) => state.isTaskCreated = payload
+    setTaskCreated: (state, payload) => state.isTaskCreated = payload,
+    setLoader(state, loader) {
+        Vue.set(state, 'loader', loader)
+    }
   },
 })

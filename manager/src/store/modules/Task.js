@@ -1,10 +1,12 @@
 import axios from 'axios'
+import Swal from 'sweetalert2'
 
 const state = {
     tasks: null,
     isTaskCreated: null,
     isTaskDeleted: null,
     isTaskUpdated: null,
+    loader: false
 }
 
 const getters = {
@@ -12,6 +14,7 @@ const getters = {
     getTaskCreated: state => state.isTaskCreated,
     getTaskDeleted: state => state.isTaskDeleted,
     getTaskUpdated: state => state.isTaskUpdated,
+    getLoader: state => state.loader
 }
 
 const actions = {
@@ -20,7 +23,7 @@ const actions = {
     fetchTasks({commit}) {
         commit('setTasks', null)
         axios.get(baseURL+'tasks').then(result => {
-          if(result.data.status == 'success') {
+          if(result.data.status === 'success') {
             commit('setTasks', result.data.data)
           }
         })
@@ -29,6 +32,7 @@ const actions = {
     // CREATE Task
     createTask({commit}, payload) {
         commit('setTaskCreated', null)
+        commit('setLoader', true)
         let formData = new FormData();
         formData.append('title', payload.title)
         formData.append('urgency', payload.urgency)
@@ -44,12 +48,14 @@ const actions = {
         }
         axios.post(baseURL+'create_task', formData).then(result => {
           if(result.data.status == 'success') {
+            commit('setLoader', false)
             commit('setTaskCreated', 'success')
           }
           else {
+            commit('setLoader', false)
             commit('setTaskCreated', 'failed')
           }
-        }).catch(err => commit('setTaskCreated', 'failed'))
+        }).catch(err => {commit('setLoader', false);commit('setTaskCreated', 'failed')})
     },
 
     // DELETE Task
@@ -77,7 +83,7 @@ const actions = {
         axios.put(baseURL+'update_task/'+id, payload).then(result => {
             if(result.data.status == 'success') {
                 commit('setTaskUpdated', 'success')
-                if(changed && payload.status != "חדש" && payload.phone_number && payload.phone_number!="undefined"){
+                if(changed && !payload.deleted && payload.status != "חדש" && payload.phone_number && payload.phone_number!="undefined"){
                     console.log("About to send SMS Post request");
                     axios.post(baseURL+"send_sms_to_student", payload).then(result => {
                         if(result.data.status == "success")
@@ -98,7 +104,10 @@ const mutations = {
     setTasks: (state, payload) => state.tasks = payload,
     setTaskCreated: (state,payload) => state.isTaskCreated = payload,
     setTaskDeleted: (state,payload) => state.isTaskDeleted = payload,
-    setTaskUpdated: (state,payload) => state.isTaskUpdated = payload
+    setTaskUpdated: (state,payload) => state.isTaskUpdated = payload,
+    setLoader(state, loader) {
+        Vue.set(state, 'loader', loader)
+    }
 }
 
 export default {

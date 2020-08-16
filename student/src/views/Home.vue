@@ -56,6 +56,31 @@
           </v-card>
         </v-col>
       </v-row>
+      <v-row justify="center">
+      <v-dialog v-model="load" persistent max-width="400px">
+        <v-card>
+          <v-card-text>
+            <v-container>
+              <v-row>
+                <v-col cols="12" class="text-center">
+                  <h4>שומר תקלה</h4>
+                  <h5>נא המתן...</h5>
+                  <v-progress-linear
+                          color="#009688"
+                          indeterminate
+                          rounded
+                          height="6"
+                  ></v-progress-linear>
+                </v-col>
+              </v-row>
+            </v-container>
+          </v-card-text>
+          <v-card-actions>
+            <v-spacer></v-spacer>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
+  </v-row>
     </v-container>
   </div>
 </template>
@@ -78,6 +103,7 @@ export default {
       color: null,
       msg: null,
       pickedLocation: null,
+      load: false,
       task: {
         title: null,
         location: null,
@@ -95,6 +121,13 @@ export default {
         v => !!v || 'נדרש'
       ],
     }
+  },
+  created() {
+    this.unsubscribe = this.$store.subscribe((mutation, state) => {
+      if (mutation.type === 'setLoader') {
+        this.load = this.$store.getters.getLoader
+      }
+    });
   },
   computed: {
     ...mapGetters(['getLocations', 'getStudents', 'getTaskCreated']),
@@ -154,14 +187,14 @@ export default {
       console.log(this.task)
       this.isPressed = true
       this.createTask(this.task);
-      Swal.fire({title: "...שומר תקלה", text: "נא המתן", showConfirmButton: false})
+      // Swal.fire({title: "...שומר תקלה", text: "נא המתן", showConfirmButton: false})
     },
   },
 
   watch: {
     getTaskCreated(val) {
       if(val && val == 'success') {
-        Swal.close()
+        // Swal.close()
         this.msg = 'התקלה הוספה בהצלחה'
         this.color = 'success'
         this.added = true
@@ -179,7 +212,7 @@ export default {
         this.$refs.form.reset()
       }
       if(val && val != 'success') {
-        Swal.close()
+        // Swal.close()
         this.msg = 'אירעה שגיאה'
         this.color = 'error'
         this.added = true
@@ -187,6 +220,9 @@ export default {
         this.btnText = "הוסף תקלה"
       }
     }
-  }
+  },
+  beforeDestroy() {
+    this.unsubscribe();
+  },
 }
 </script>
