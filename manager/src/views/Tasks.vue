@@ -1,34 +1,21 @@
 <template>
     <div class="tasks mx-5 mt-3">
       <v-row>
-        <v-snackbar
-            v-model="added"
-            timeout="2500"
-            :top="true"
-            :color="color"
-          >
+        <v-snackbar v-model="added" timeout="2500" :top="true" :color="color">
             {{msg}}
-
             <template v-slot:action="{ attrs }">
-              <v-btn
-                color="white"
-                text
-                v-bind="attrs"
-                @click="added = false"
-              >
-                ביטול
-              </v-btn>
+                <v-btn color="white" text v-bind="attrs" @click="added = false">ביטול</v-btn>
             </template>
-          </v-snackbar>
+        </v-snackbar>
         <v-col cols="6">
-          <h2 class="">תקלות</h2>
+            <h2 class="">תקלות</h2>
         </v-col>
         <v-col>
-          <v-btn class="float-left" outlined color="teal" @click="open_dialog"><i class="fa fa-plus ml-2"></i>הוסף תקלה</v-btn>
-          <v-btn class="float-left ml-2" dark depressed color="teal" @click="overlay = !overlay"><i class="fa fa-print ml-2"></i> תצוגת הדפסה</v-btn>
+            <v-btn class="float-left" outlined color="teal" @click="open_dialog"><i class="fa fa-plus ml-2"></i>הוסף תקלה</v-btn>
+            <v-btn class="float-left ml-2" dark depressed color="teal" @click="overlay = !overlay"><i class="fa fa-print ml-2"></i> תצוגת הדפסה</v-btn>
+            <v-btn class="float-left ml-2" dark depressed color="teal" @click="download_excel"><i class="fa fa-download ml-2"></i>הורדת גיבוי</v-btn>
         </v-col>
       </v-row>
-      
 
       <!-- Overlay -->
 
@@ -239,6 +226,7 @@ import DoneTasks from '@/components/Done.vue'
 import Swal from "sweetalert2"
 import {mapActions, mapGetters, mapState} from 'vuex'
 import axios from "axios";
+import XLSX from 'xlsx'
   export default {
     components: {
       NewTasks,
@@ -304,6 +292,7 @@ import axios from "axios";
                     sortable: true
                 },
             ],
+            tasksToDownload: null,
         }
     },
     created() {
@@ -354,6 +343,12 @@ import axios from "axios";
           if (this.$refs.form)
               this.$refs.form.reset();
       },
+      download_excel(){
+          var worksheet = XLSX.utils.json_to_sheet(this.tasksToDownload);
+          var wb = XLSX.utils.book_new();
+          XLSX.utils.book_append_sheet(wb, worksheet, 'תקלות');
+          XLSX.writeFile(wb, "גיבוי_תקלות.xlsx");
+      },      
       setPhoneNumber(v) {
         if(v) {
           this.task.phone_number = v.phone
@@ -364,6 +359,37 @@ import axios from "axios";
         this.currentTab = v
         console.log(this.currentTab)
         this.filterTasksByStatus(this.currentTab)
+      },
+      prepare_for_download(tasks){
+          for(let task of tasks){
+              task["כותרת תקלה"] = task["title"];
+              task["מיקום"] = task["location"];
+              task["ת. יצירה"] = task["created_on"];
+              task["ת. עריכה"] = task["modified_on"];
+              task["מספר טלפון"] = task["phone_number"];
+              task["דחיפות"] = task["urgency"];
+              task["שם מלא"] = task["full_name"];
+              task["תיאור"] = task["description"];
+              task["סטטוס"] = task["status"];
+              task["תמונה"] = task["image"];
+              task["נשלחה התראה"] = task["notification_sent"];
+              task["נמחקה"] = task["deleted"];
+              delete task["title"];
+              delete task["location"];
+              delete task["created_on"];
+              delete task["modified_on"];
+              delete task["phone_number"];
+              delete task["urgency"];
+              delete task["full_name"];
+              delete task["description"];
+              delete task["status"];
+              delete task["image"];
+              delete task["notification_sent"];
+              delete task["deleted"];
+              delete task["_id"];
+              delete task["__v"];
+          }
+          return tasks;
       },
       filterTasksByStatus(v) {
         if(this.tasks) {
@@ -500,12 +526,9 @@ import axios from "axios";
     watch: {
       getTasks(val) {
         if(val) {
-          this.tasks = val.filter((item => { return !item.deleted }))
-          //if(this.tasks) {
-            this.filterTasksByStatus(this.currentTab)
-          //}
-          
-          //this.filteredTasks = this.tasks.filter(task => task.status == 'חדש' || task.status == 'טיפול מתמשך')
+            this.tasksToDownload = this.prepare_for_download(JSON.parse(JSON.stringify(val)));
+            this.tasks = val.filter((item => { return !item.deleted }));
+            this.filterTasksByStatus(this.currentTab);
         }
       },
       getTaskCreated(val) {

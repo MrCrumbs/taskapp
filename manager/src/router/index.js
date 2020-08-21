@@ -1,13 +1,13 @@
-import Vue from 'vue'
-import VueRouter from 'vue-router'
-import Home from '../views/Home.vue'
-import Tasks from '../views/Tasks.vue'
-import TaskDetails from '../views/TaskDetails.vue'
-import Locations from '../views/Locations.vue'
-import Students from '../views/Students.vue'
-import Settings from '../views/Settings.vue'
+import Vue from "vue";
+import VueRouter from "vue-router";
+import Home from "../views/Home.vue";
+import Tasks from "../views/Tasks.vue";
+import TaskDetails from "../views/TaskDetails.vue";
+import Locations from "../views/Locations.vue";
+import Students from "../views/Students.vue";
+import Settings from "../views/Settings.vue";
 import RecycleBin from "../views/RecycleBin";
-
+import LocationReport from "../views/LocationReport";
 Vue.use(VueRouter)
 
   const routes = [
@@ -67,14 +67,22 @@ Vue.use(VueRouter)
         requiresAuth: true
       }
     },
-  {
-    path: '/login',
-    name: 'Login',
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "about" */ '../views/Login.vue')
-  }
+    {
+      path: '/locationReport',
+      name: 'LocationReport',
+      component: LocationReport,
+      meta: {
+        requiresAuth: true
+      }
+    },
+    {
+        path: '/login',
+        name: 'Login',
+        // route level code-splitting
+        // this generates a separate chunk (about.[hash].js) for this route
+        // which is lazy-loaded when the route is visited.
+        component: () => import(/* webpackChunkName: "about" */ '../views/Login.vue')
+    }
 ]
 
 const router = new VueRouter({
