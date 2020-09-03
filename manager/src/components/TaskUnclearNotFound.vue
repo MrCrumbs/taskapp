@@ -56,33 +56,8 @@ export default {
     computed: {
         newTasks() {
             let tasks = this.$props.tasks.filter(task => task.status == 'לא ברור / לא נמצא');
-            return tasks.sort((a,b) => { 
-                let x = a.urgency;
-                let xx = this.checkLate(a);
-                let y = b.urgency;
-                let yy = this.checkLate(b);
-                
-                if(xx && !yy)
-                    return -1;
-                else if(!xx && yy)
-                    return 1;
-                else{
-                    if(x == "גבוהה")
-                        x = 1;
-                    else if(x == "בינונית")
-                        x = 2;
-                    else if(x == "נמוכה")
-                        x = 3;
-                    
-                    if(y == "גבוהה")
-                        y = 1;
-                    else if(y == "בינונית")
-                        y = 2;
-                    else if(y == "נמוכה")
-                        y = 3;
-                    
-                    return (x < y) ? -1 : ((x > y) ? 1 : 0);
-                }
+            return tasks.sort((a,b) => {
+                return (this.checkLate(a) && !this.checkLate(b)) ? -1 : (!this.checkLate(a) && this.checkLate(b) ? 1 : (a.urgency != b.urgency ? this.compare_urgencies(a.urgency, b.urgency) : this.compare_dates(a.created_on, b.created_on)));
             });
         }
     },
@@ -108,17 +83,28 @@ export default {
                 {
                     text: 'דחיפות',
                     value: 'urgency',
-                    sortable: true
+                    sortable: true,
+                    sort: (a,b) => {
+                        return this.compare_urgencies(a, b);
+                    }
                 },
                 {
                     text: 'ת. יצירה',
                     value: 'created_on',
-                    sortable: true
+                    sortable: true,
+                    sort: (a, b) => {
+                        // sending a and b REVERSED, because the requested default is newest to oldest, but when sorting with arrow it should be opposite
+                        return this.compare_dates(b, a);
+                    }
                 },
                 {
                     text: 'ת. עריכה',
                     value: 'modified_on',
-                    sortable: true
+                    sortable: true,
+                    sort: (a, b) => {
+                        // sending a and b REVERSED, because the requested default is newest to oldest, but when sorting with arrow it should be opposite
+                        return this.compare_dates(b, a);
+                    }
                 },
                 {
                     text: 'סטאטוס',
@@ -151,6 +137,37 @@ export default {
     methods: {
         updateTaskStatus(event, record){
             this.$emit('edit-task', {'record': record,'status': event});
+        },
+        compare_dates(a, b){
+            let a_split_date = a.split("/");
+            let a_year = a_split_date[2];
+            let a_month = a_split_date[1];
+            let a_day = a_split_date[0];
+            let a_date = new Date(a_year+"-"+a_month+"-"+a_day);
+            
+            let b_split_date = b.split("/");
+            let b_year = b_split_date[2];
+            let b_month = b_split_date[1];
+            let b_day = b_split_date[0];
+            let b_date = new Date(b_year+"-"+b_month+"-"+b_day);
+            
+            return (a_date > b_date) ? -1 : ((a_date < b_date) ? 1 : 0);
+        },
+        compare_urgencies(a, b){
+            let x = null, y = null;
+            if(a == "גבוהה")
+                x = 1;
+            else if(a == "בינונית")
+                x = 2;
+            else if(a == "נמוכה")
+                x = 3;
+            if(b == "גבוהה")
+                y = 1;
+            else if(b == "בינונית")
+                y = 2;
+            else if(b == "נמוכה")
+                y = 3;
+            return (x < y) ? -1 : ((x > y) ? 1 : 0);
         },
         checkLate(record) {
             if(record.deleted)

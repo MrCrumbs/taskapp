@@ -25,7 +25,7 @@
         </v-col>
       </v-row>
         <v-row align="center">
-          <v-col class="d-flex" cols="5" sm="5">
+          <v-col class="d-flex" cols="4" sm="4">
             <v-select
                     :items="locations"
                     v-model="selectedLoc"
@@ -34,7 +34,7 @@
             ></v-select>
           </v-col>
 
-            <v-col class="d-flex" cols="5" sm="5">
+            <v-col class="d-flex" cols="4" sm="4">
               <v-menu
                       ref="menu"
                       v-model="menu2"
@@ -65,15 +65,15 @@
 
           <v-col class="d-flex" cols="2" sm="2">
             <v-btn class="float-left" outlined color="teal" @click="searchTasks()"><i class="fa fa-search ml-2"></i>חיפוש</v-btn>
-            <v-btn class="float-left mr-1" :loading="loader" :disabled="loader" color="teal" @click="refresh()"><i class="fa fa-refresh ml-2"></i>
-              אתחול
-              <template v-slot:loader>
-              <span class="custom-loader">
-                <v-icon :dark="true">mdi-cached</v-icon>
-              </span>
-              </template>
+            <v-btn class="float-left mr-1" :loading="loader" dark depressed color="teal" @click="refresh()"><i class="fa fa-refresh ml-2"></i>
+                אתחול
+                <template v-slot:loader>
+                    <span class="custom-loader">
+                        <v-icon>mdi-cached</v-icon>
+                    </span>
+                </template>
             </v-btn>
-
+            <v-btn class="float-left mr-1" dark depressed color="teal" :disabled="download" @click="download_excel"><i class="fa fa-download ml-2"></i>הורדת דו"ח</v-btn>
           </v-col>
 
 
@@ -137,6 +137,7 @@ import TaskUnclearNotFound from '@/components/TaskUnclearNotFound.vue'
 import DoneTasks from '@/components/Done.vue'
 import moment from 'moment'
 import Swal from "sweetalert2"
+import XLSX from 'xlsx'
 import {mapActions, mapGetters} from 'vuex'
   export default {
     components: {
@@ -192,12 +193,14 @@ import {mapActions, mapGetters} from 'vuex'
                     sortable: true
                 },
             ],
-          selectedLoc: null,
-          dates: [],
-          dateFormatted: [],
-          menu1: false,
-          menu2: false,
-          loader: false
+            selectedLoc: null,
+            dates: [],
+            dateFormatted: [],
+            menu1: false,
+            menu2: false,
+            loader: false,
+            download: true,
+            tasksToDownload: null
         }
     },
     computed: {
@@ -219,36 +222,76 @@ import {mapActions, mapGetters} from 'vuex'
 
     methods: {
       ...mapActions(['fetchTasks']),
-      searchTasks() {
-        if (this.selectedLoc && this.dates.length !== 0) {
-          let d1 = this.dates[0]
-          let d2 = this.dates[1]
-          let start = null
-          let end = null
-          if (moment(d1).diff(d2) < 0) {
-            start = d1
-            end = d2
-          } else {
-            end = d1
-            start = d2
-          }
-          console.log('start->', start, 'end->', end)
-          const tasks = []
-          this.tasks.forEach((item) => {
-            let date = moment(item.created_on, 'DD/MM/YYYY').format('YYYY-MM-DD')
-            if (item.location === this.selectedLoc && moment(date).isBetween(start, end)) {
-              tasks.push(item)
+        download_excel(){
+            var worksheet = XLSX.utils.json_to_sheet(this.tasksToDownload);
+            var wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, worksheet, 'תקלות');
+            XLSX.writeFile(wb, "דוח_לפי_מיקום.xlsx");
+        },
+        prepare_for_download(tasks){
+            for(let task of tasks){
+                task["כותרת תקלה"] = task["title"];
+                task["מיקום"] = task["location"];
+                task["ת. יצירה"] = task["created_on"];
+                task["ת. עריכה"] = task["modified_on"];
+                task["מספר טלפון"] = task["phone_number"];
+                task["דחיפות"] = task["urgency"];
+                task["שם מלא"] = task["full_name"];
+                task["תיאור"] = task["description"];
+                task["סטטוס"] = task["status"];
+                task["תמונה"] = task["image"];
+                task["נשלחה התראה"] = task["notification_sent"];
+                task["נמחקה"] = task["deleted"];
+                delete task["title"];
+                delete task["location"];
+                delete task["created_on"];
+                delete task["modified_on"];
+                delete task["phone_number"];
+                delete task["urgency"];
+                delete task["full_name"];
+                delete task["description"];
+                delete task["status"];
+                delete task["image"];
+                delete task["notification_sent"];
+                delete task["deleted"];
+                delete task["_id"];
+                delete task["__v"];
             }
-          })
-          this.tasks = tasks
-          console.log('tasks-->', tasks)
-        }
-      },
+            return tasks;
+        },
+        searchTasks() {
+            if (this.selectedLoc && this.dates.length !== 0) {
+                let d1 = this.dates[0]
+                let d2 = this.dates[1]
+                let start = null
+                let end = null
+                if (moment(d1).diff(d2) < 0) {
+                start = d1
+                end = d2
+                } else {
+                end = d1
+                start = d2
+                }
+                console.log('start->', start, 'end->', end)
+                const tasks = []
+                this.tasks.forEach((item) => {
+                let date = moment(item.created_on, 'DD/MM/YYYY').format('YYYY-MM-DD')
+                if (item.location === this.selectedLoc && moment(date).isBetween(start, end)) {
+                  tasks.push(item)
+                }
+                })
+                this.tasksToDownload = this.prepare_for_download(JSON.parse(JSON.stringify(tasks)));
+                this.tasks = tasks
+                console.log('tasks-->', tasks)
+                this.download = false;
+            }
+        },
       refresh() {
         this.dates = []
         this.selectedLoc = null
         this.fetchTasks()
         this.loader = true
+        this.download = true
       },
       checkTab(v) {
         this.currentTab = v
