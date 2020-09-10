@@ -287,8 +287,8 @@ import XLSX from 'xlsx'
                     sortable: true
                 },
                 {
-                    text: 'תיאור',
-                    value: 'description',
+                    text: 'כותרת',
+                    value: 'title',
                     sortable: true
                 },
             ],

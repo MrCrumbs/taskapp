@@ -59,7 +59,7 @@ export default {
             //tasks.sort((a, b) => status[a.status] - status[b.status]);
 
             return tasks.sort((a,b) => {
-                return (this.checkLate(a) && !this.checkLate(b)) ? -1 : (!this.checkLate(a) && this.checkLate(b) ? 1 : (a.urgency != b.urgency ? this.compare_urgencies(a.urgency, b.urgency) : this.compare_dates(a.created_on, b.created_on)));
+                return (this.checkLate(a) && !this.checkLate(b)) ? -1 : (!this.checkLate(a) && this.checkLate(b) ? 1 : (((a.urgency != b.urgency) && (a.urgency == "גבוהה" || b.urgency == "גבוהה")) ? this.compare_urgencies(a.urgency, b.urgency) : this.compare_dates(a.created_on, b.created_on)));
             });
         },
     },
@@ -154,22 +154,18 @@ export default {
             let b_day = b_split_date[0];
             let b_date = new Date(b_year+"-"+b_month+"-"+b_day);
             
-            return (a_date > b_date) ? -1 : ((a_date < b_date) ? 1 : 0);
+            return (a_date < b_date) ? -1 : ((a_date > b_date) ? 1 : 0);
         },
         compare_urgencies(a, b){
             let x = null, y = null;
             if(a == "גבוהה")
                 x = 1;
-            else if(a == "בינונית")
+            else if(a == "בינונית" || a == "נמוכה")
                 x = 2;
-            else if(a == "נמוכה")
-                x = 3;
             if(b == "גבוהה")
                 y = 1;
-            else if(b == "בינונית")
+            else if(b == "בינונית" || b == "נמוכה")
                 y = 2;
-            else if(b == "נמוכה")
-                y = 3;
             return (x < y) ? -1 : ((x > y) ? 1 : 0);
         },
         checkLate(record) {
