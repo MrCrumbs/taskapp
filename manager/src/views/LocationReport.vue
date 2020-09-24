@@ -96,6 +96,7 @@
                 :footer-props="{
                   'itemsPerPageText':'שורות לעמוד'
                 }"
+                disable-pagination
             >
 
             </v-data-table>

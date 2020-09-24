@@ -47,7 +47,11 @@
                         :items="emails"
                         class="elevation-1"
                         :search="search_email"
-                        :footer-props="{'itemsPerPageText':'שורות לעמוד'}"
+                        :footer-props="{
+                  'itemsPerPageText':'שורות לעמוד',
+                  'itemsPerPageOptions': [-1, 10, 15, 50]
+                }"
+                :items-per-page="-1"
                 >
                     <template v-slot:top>
                         <v-text-field  v-model="search_email" label="חיפוש" append-icon="mdi-magnify" class="mx-4 mt-3"></v-text-field>
@@ -92,8 +96,10 @@
                         class="elevation-1"
                         :search="search_phone"
                         :footer-props="{
-                  'itemsPerPageText':'שורות לעמוד'
+                  'itemsPerPageText':'שורות לעמוד',
+                  'itemsPerPageOptions': [-1, 10, 15, 50]
                 }"
+                :items-per-page="-1"
                 >
                     <template v-slot:top>
                         <v-text-field  v-model="search_phone" label="חיפוש" append-icon="mdi-magnify" class="mx-4 mt-3"></v-text-field>

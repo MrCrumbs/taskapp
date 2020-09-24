@@ -2,7 +2,10 @@
     <div class="task-unclearnotfound">
         <v-row>
         <v-col cols="12">
-          <v-data-table :headers="columns" :items="newTasks" class="elevation-1" :search="search" :footer-props="{'itemsPerPageText':'שורות לעמוד'}">
+          <v-data-table :headers="columns" :items="newTasks" class="elevation-1" :search="search" :footer-props="{
+                  'itemsPerPageText':'שורות לעמוד',
+                  'itemsPerPageOptions': [-1, 10, 15, 50]
+                }" :items-per-page="-1">
             <template v-slot:top>
               <v-text-field  v-model="search" label="חיפוש" append-icon="mdi-magnify" class="mx-4 mt-3"></v-text-field>
             </template>

@@ -37,8 +37,10 @@
                 class="elevation-1"
                 :search="search"
                 :footer-props="{
-                  'itemsPerPageText':'שורות לעמוד'
+                  'itemsPerPageText':'שורות לעמוד',
+                  'itemsPerPageOptions': [-1, 10, 15, 50]
                 }"
+                :items-per-page="-1"
             >
                 <template v-slot:top>
                   <v-row>
@@ -229,7 +231,6 @@ import {mapActions, mapGetters} from 'vuex'
             search: null,
             dialog: false,
             editDialog: false,
-            pagination: {},
             visible: false,
             columns: [
                 {

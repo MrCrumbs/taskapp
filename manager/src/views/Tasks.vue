@@ -35,8 +35,10 @@
                 class="elevation-1 over-table"
                 light
                 :footer-props="{
-                  'itemsPerPageText':'שורות לעמוד'
+                  'itemsPerPageText':'שורות לעמוד',
+                  'itemsPerPageOptions': [-1, 10, 15, 50]
                 }"
+                :items-per-page="-1"
             >
                 
             </v-data-table>
@@ -242,7 +244,6 @@ import XLSX from 'xlsx'
             search: null,
             dialog: false,
             editDialog: false,
-            pagination: {},
             visible: false,
             added: false,
             isPressed: false,
