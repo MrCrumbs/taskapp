@@ -124,7 +124,24 @@
                 </v-data-table>
             </v-col>
         </v-row>
-
+        
+        
+        <!--
+        <br/>
+        
+        <v-row>
+            <v-col>
+                <h2 class="">תיבת טקסט</h2>
+            </v-col>
+            <v-col>
+                <v-textarea outlined label="נוסח הודעת מייל" clearable v-model="test_text_box"></v-textarea>
+            </v-col>
+            <v-col>
+                <v-btn color="teal" dark block @click="test_click">אישור</v-btn>
+            </v-col>
+        </v-row>
+        -->
+        
         <!-- ADD modal -->
 
         <v-row justify="center">
@@ -206,6 +223,7 @@
               phoneNum: null,
               addEmailOrNum: false,
               addEmail: false,
+              test_text_box: null,
               email_columns: [
                   {
                       text: 'אימייל',
@@ -252,6 +270,9 @@
         },
         methods: {
             ...mapActions(['updateManagerPassword','addManagerEmailAndPhoneNum','updateManagerEmailOrNum','deleteManagerEmailOrNum']),
+            test_click(){
+                alert(JSON.stringify(this.test_text_box));
+            },
             saveNewPassword() {
                 if (this.$refs.password.reportValidity()) {
                     if (this.newPassword === this.repeatPassword) {

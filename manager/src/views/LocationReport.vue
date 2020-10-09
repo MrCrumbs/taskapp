@@ -276,11 +276,10 @@ import {mapActions, mapGetters} from 'vuex'
                 console.log('start->', start, 'end->', end)
                 const tasks = []
                 this.tasks.forEach((item) => {
-                let date = moment(item.created_on, 'DD/MM/YYYY').format('YYYY-MM-DD')
-                if (item.location === this.selectedLoc && moment(date).isBetween(start, end)) {
-                  tasks.push(item)
-                }
-                })
+                    let date = moment(item.created_on, 'DD/MM/YYYY').format('YYYY-MM-DD')
+                    if (item.location === this.selectedLoc && moment(date).isBetween(start, end))
+                        tasks.push(item)
+                });
                 this.tasksToDownload = this.prepare_for_download(JSON.parse(JSON.stringify(tasks)));
                 this.tasks = tasks
                 console.log('tasks-->', tasks)
