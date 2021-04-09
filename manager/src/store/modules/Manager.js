@@ -23,6 +23,50 @@ const actions = {
         }).catch(err => console.log('error occurred while updating password', err.message))
     },
     
+    updateManagerChangedStatusDoneMessage({commit}, payload) {
+        let id = payload._id
+        delete payload._id
+        axios.put(baseURL+'add_changed_status_done_message/'+id, payload).then(result => {
+            if(result.data.status === 'success') {
+                commit('setManager', result.data.data)
+                Swal.fire('בוצע', 'הנוסח נשמר בהצלחה!', 'success')
+            }
+        }).catch(err => console.log('error occurred while updating message', err.message))
+    },
+    
+    updateManagerChangedStatusUnclearMessage({commit}, payload) {
+        let id = payload._id
+        delete payload._id
+        axios.put(baseURL+'add_changed_status_unclear_message/'+id, payload).then(result => {
+            if(result.data.status === 'success') {
+                commit('setManager', result.data.data)
+                Swal.fire('בוצע', 'הנוסח נשמר בהצלחה!', 'success')
+            }
+        }).catch(err => console.log('error occurred while updating message', err.message))
+    },
+    
+    updateManagerChangedStatusContinuousMessage({commit}, payload) {
+        let id = payload._id
+        delete payload._id
+        axios.put(baseURL+'add_changed_status_continuous_message/'+id, payload).then(result => {
+            if(result.data.status === 'success') {
+                commit('setManager', result.data.data)
+                Swal.fire('בוצע', 'הנוסח נשמר בהצלחה!', 'success')
+            }
+        }).catch(err => console.log('error occurred while updating message', err.message))
+    },
+    
+    updateManagerDeadlinePassedMessage({commit}, payload) {
+        let id = payload._id
+        delete payload._id
+        axios.put(baseURL+'add_deadline_passed_message/'+id, payload).then(result => {
+            if(result.data.status === 'success') {
+                commit('setManager', result.data.data)
+                Swal.fire('בוצע', 'הנוסח נשמר בהצלחה!', 'success')
+            }
+        }).catch(err => console.log('error occurred while updating message', err.message))
+    },
+    
     // UPDATE manager email or num
     updateManagerEmailOrNum({commit}, payload) {
         axios.put(baseURL+'update_manager_email_or_number', payload).then(result => {

@@ -32,7 +32,7 @@
         <v-col cols="12" v-if="locations">
             <v-data-table
                 :headers="columns"
-                :items="locations"
+                :items="filtered_locations"
                 class="elevation-1"
                 :search="search"
                 :footer-props="{
@@ -178,13 +178,15 @@
             locationToEdit: null,
             deleteModal: false,
             locations: null,
+            filtered_locations: null,
             isPressed:false,
             color: null,
             msg: null,
             added: false,
             location: {
               name: null,
-              created_on: null
+              created_on: null,
+              location_type: null
             },
             required: [
               v => !!v || 'נדרש'
@@ -223,24 +225,24 @@
 
       },
       save() {
-        if(this.location.name == null || this.location.name == '') {
-          return
-        }
-        this.isPressed = true
-        this.createLocation(this.location)
+        if(this.location.name == null || this.location.name == '')
+          return;
+        this.isPressed = true;
+        this.location.location_type = "general";
+        this.createLocation(this.location);
       },
       edit(record) {
         this.editDialog = true
         this.locationToEdit = record
       },
       editLocation(){
-        if(this.locationToEdit.name == null || this.locationToEdit.name == '') {
-          return
-        }
+        if(this.locationToEdit.name == null || this.locationToEdit.name == '')
+          return;
         const payload = {
           id: this.locationToEdit._id,
           data: {
-            name: this.locationToEdit.name
+            name: this.locationToEdit.name,
+            location_type: "general"
           }
         }
         this.updateLocation(payload)
@@ -258,15 +260,15 @@
     },
 
     created(){
-      if(this.getLocations) {
-        this.locations = this.getLocations
-      }
+        this.locations = this.getLocations;
+        if(this.locations)
+            this.filtered_locations = this.locations.filter(location => location.location_type == "general");
     },
-
     watch: {
       getLocations(val) {
         if(val) {
-          this.locations = val
+          this.locations = val;
+          this.filtered_locations = this.locations.filter(location => location.location_type == "general");
         }
       },
       getLocationCreated(val) {

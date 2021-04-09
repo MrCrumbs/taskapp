@@ -11,7 +11,7 @@
             <h2 class="">תקלות</h2>
         </v-col>
         <v-col>
-            <v-btn class="float-left" outlined color="teal" @click="open_dialog"><i class="fa fa-plus ml-2"></i>הוסף תקלה</v-btn>
+            <v-btn class="float-left" outlined color="teal" @click="open_dialog"><i class="fa fa-plus ml-2"></i>הוסף תקלת רכב</v-btn>
             <v-btn class="float-left ml-2" dark depressed color="teal" @click="showPrintOverlay"><i class="fa fa-print ml-2"></i>תצוגת הדפסה</v-btn>
             <v-btn class="float-left ml-2" dark depressed color="teal" @click="download_excel"><i class="fa fa-download ml-2"></i>הורדת גיבוי</v-btn>
         </v-col>
@@ -105,7 +105,7 @@
                               <v-file-input outlined show-size label="העלאת תמונה" v-model="task.image" accept="image/*" prepend-icon="mdi-camera"></v-file-input>
                             </v-col>
                             <v-col cols="12" sm="12" md="12">
-                              <v-textarea outlined label="תיאור" v-model="task.description" clearable rows="3"></v-textarea>
+                              <v-textarea outlined label="תיאור" v-model="task.description" clearable></v-textarea>
                             </v-col>
                         </v-row>
                     </v-form>
@@ -313,7 +313,7 @@ import XLSX from 'xlsx'
         var locations = this.getLocations;
         var filtered_location = null;
         if(locations){
-            filtered_location = locations.filter(location => location.location_type == "general");
+            filtered_location = locations.filter(location => location.location_type == "vehicle");
             filtered_location.forEach(element => {
                 let name = element.name;
                 locs.push(name);
@@ -466,7 +466,7 @@ import XLSX from 'xlsx'
         // }
       },
       addTask() {
-        if(this.task.title == null || this.task.title == '' || this.task.urgency == null || this.task.urgency == '' || this.task.location == null || this.task.location == '' || this.task.full_name == null || this.task.full_name == '')
+        if(this.task.title == null || this.task.title == '' || this.task.urgency == null || this.task.urgency == '' || this.task.location == null || this.task.location == '' || this.task.full_name == null || this.task.full_name == '' || this.task.description == null || this.task.description == '')
         {
           return
         }
@@ -479,7 +479,7 @@ import XLSX from 'xlsx'
         this.task.modified_on = day+"/"+month+"/"+year
         //console.log(this.task)
         this.isPressed = true
-        this.task.task_type = "general"
+        this.task.task_type = "vehicle"
         this.createTask(this.task);
         this.loaderValues = 0
         // Swal.fire({title: "...שומר תקלה", text: "נא המתן", showConfirmButton: false})
@@ -506,6 +506,7 @@ import XLSX from 'xlsx'
         let day = this.addZ(date.getDate())
         this.taskToEdit.changed = (this.taskToEdit.old_status != this.taskToEdit.status) ? true : false;
         this.taskToEdit.modified_on = day+"/"+month+"/"+year
+        console.log(this.taskToEdit);
         var task_manager = JSON.parse(localStorage.getItem('taskManager'));
         var message_body_done = task_manager.changed_status_done_message;
         var message_body_unclear = task_manager.changed_status_unclear_message;
@@ -516,7 +517,6 @@ import XLSX from 'xlsx'
             this.taskToEdit.message_body_unclear = message_body_unclear
         if(message_body_continuous)
             this.taskToEdit.message_body_continuous = message_body_continuous
-        console.log(this.taskToEdit);
         this.updateTask(this.taskToEdit)
       },
       editTaskStatus(data) {
@@ -560,7 +560,7 @@ import XLSX from 'xlsx'
     watch: {
       getTasks(val) {
         if(val) {
-            this.tasks = val.filter((item => { return item.task_type == "general" }));
+            this.tasks = val.filter((item => { return item.task_type == "vehicle" }));
             this.tasksToDownload = this.prepare_for_download(JSON.parse(JSON.stringify(this.tasks)));
             this.tasks = this.tasks.filter((item => { return !item.deleted }));
             this.filterTasksByStatus(this.currentTab);

@@ -4,6 +4,8 @@ import Home from "../views/Home.vue";
 import Tasks from "../views/Tasks.vue";
 import TaskDetails from "../views/TaskDetails.vue";
 import Locations from "../views/Locations.vue";
+import VehicleLocations from "../views/VehicleLocations.vue";
+import VehicleTasks from "../views/VehicleTasks.vue";
 import Students from "../views/Students.vue";
 import Settings from "../views/Settings.vue";
 import RecycleBin from "../views/RecycleBin";
@@ -36,9 +38,25 @@ Vue.use(VueRouter)
     }
   },
   {
+    path: '/vehicleTasks',
+    name: 'VehicleTasks',
+    component: VehicleTasks,
+    meta: {
+      requiresAuth: true
+    }
+  },
+  {
     path: '/locations',
     name: 'Locations',
     component: Locations,
+    meta: {
+      requiresAuth: true
+    }
+  },
+  {
+    path: '/vehicleLocations',
+    name: 'VehicleLocations',
+    component: VehicleLocations,
     meta: {
       requiresAuth: true
     }

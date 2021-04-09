@@ -30,10 +30,10 @@
                   <v-autocomplete clearable outlined v-model="task.full_name" :items="students" :item-text="'name'" :item-value="'name'" :name="'name'" label="שם מלא*" :rules="required" return-object @change="setPhoneNumber"></v-autocomplete>
                 </v-col> 
                 <v-col cols="12" sm="6" md="6">
-                  <v-autocomplete clearable outlined @change="checkLocation" v-model="pickedLocation" :items="locations" label="מיקום*" :rules="required"></v-autocomplete>
+                  <v-autocomplete clearable outlined @change="checkLocation" v-model="pickedLocation" :items="locations" label="רכב*" :rules="required"></v-autocomplete>
                 </v-col>
                 <v-col cols="12" sm="6" md="6" v-if="pickedLocation && pickedLocation == 'אחר'">
-                  <v-text-field label="מיקום*" v-model="task.location" :rules="required" clearable outlined required></v-text-field>
+                  <v-text-field label="רכב*" v-model="task.location" :rules="required" clearable outlined required></v-text-field>
                 </v-col>
                 <v-col cols="12" sm="6" md="6">
                   <v-text-field label="תיאור התקלה בקצרה*" :rules="required" outlined v-model="task.title" clearable required></v-text-field>
@@ -137,7 +137,7 @@ export default {
         var locations = this.getLocations;
         var filtered_location = null;
         if(locations){
-            filtered_location = locations.filter(location => location.location_type == "general");
+            filtered_location = locations.filter(location => location.location_type == "vehicle");
             filtered_location.forEach(element => {
                 let name = element.name;
                 locs.push(name);
@@ -190,7 +190,7 @@ export default {
       this.btnText = "נא המתן"
       console.log(this.task)
       this.isPressed = true
-      this.task.task_type = "general"
+      this.task.task_type = "vehicle"
       this.createTask(this.task);
       // Swal.fire({title: "...שומר תקלה", text: "נא המתן", showConfirmButton: false})
     },
@@ -218,6 +218,7 @@ export default {
       }
       if(val && val != 'success') {
         // Swal.close()
+        console.log(val)
         this.msg = 'אירעה שגיאה'
         this.color = 'error'
         this.added = true

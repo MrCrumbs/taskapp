@@ -1,16 +1,9 @@
 <template>
     <div class="mx-5 mt-3">
-
       <v-container class="mt-5 pr-0">
-        <v-row
-                class="mb-6"
-                justify="right"
-        >
+        <v-row class="mb-6">
           <v-col lg="4">
-            <v-card
-                    class="pa-2"
-                    tile
-            >
+            <v-card class="pa-2" tile>
               <h2 class="text-center pt-3">החלפת סיסמה</h2>
                 <form ref="password">
               <v-row>
@@ -126,25 +119,93 @@
         </v-row>
         
         
-        <!--
         <br/>
         
         <v-row>
-            <v-col>
-                <h2 class="">תיבת טקסט</h2>
-            </v-col>
-            <v-col>
-                <v-textarea outlined label="נוסח הודעת מייל" clearable v-model="test_text_box"></v-textarea>
-            </v-col>
-            <v-col>
-                <v-btn color="teal" dark block @click="test_click">אישור</v-btn>
+            <v-col lg="4" style="padding-bottom:0">
+                <h2 class="">נוסח הודעת עדכון סטאטוס - בוצע</h2>
             </v-col>
         </v-row>
-        -->
+        <v-row>
+            <v-col lg="4" style="padding-bottom:0">
+                <v-textarea outlined label="נוסח הודעה" clearable v-model="status_changed_done_text_box"></v-textarea>
+            </v-col>
+            <v-col>
+            הערה: על ההודעה לכלול את הביטויים הדינאמיים <i>{שם}, {תקלה}</i> בדיוק פעם אחת.
+            </v-col>
+        </v-row>
+        <v-row>
+            <v-col lg="4" style="padding-top:0">
+                <v-btn color="teal" dark block @click="status_changed_done_click">שמור</v-btn>
+            </v-col>
+        </v-row>
+        
+        <br/>
+        
+        <v-row>
+            <v-col lg="4" style="padding-bottom:0">
+                <h2 class="">נוסח הודעת עדכון סטאטוס - לא ברור/לא נמצא</h2>
+            </v-col>
+        </v-row>
+        <v-row>
+            <v-col lg="4" style="padding-bottom:0">
+                <v-textarea outlined label="נוסח הודעה" clearable v-model="status_changed_unclear_text_box"></v-textarea>
+            </v-col>
+            <v-col>
+            הערה: על ההודעה לכלול את הביטויים הדינאמיים <i>{שם}, {תקלה}</i> בדיוק פעם אחת.
+            </v-col>
+        </v-row>
+        <v-row>
+            <v-col lg="4" style="padding-top:0">
+                <v-btn color="teal" dark block @click="status_changed_unclear_click">שמור</v-btn>
+            </v-col>
+        </v-row>
+        
+        <br/>
+        
+        <v-row>
+            <v-col lg="4" style="padding-bottom:0">
+                <h2 class="">נוסח הודעת עדכון סטאטוס - טיפול מתמשך</h2>
+            </v-col>
+        </v-row>
+        <v-row>
+            <v-col lg="4" style="padding-bottom:0">
+                <v-textarea outlined label="נוסח הודעה" clearable v-model="status_changed_continuous_text_box"></v-textarea>
+            </v-col>
+            <v-col>
+            הערה: על ההודעה לכלול את הביטויים הדינאמיים <i>{שם}, {תקלה}</i> בדיוק פעם אחת.
+            </v-col>
+        </v-row>
+        <v-row>
+            <v-col lg="4" style="padding-top:0">
+                <v-btn color="teal" dark block @click="status_changed_continuous_click">שמור</v-btn>
+            </v-col>
+        </v-row>
+        
+        <br/>
+        
+        <v-row>
+            <v-col lg="4" style="padding-bottom:0">
+                <h2 class="">נוסח הודעת חוסר טיפול לאחר שבועיים</h2>
+            </v-col>
+        </v-row>
+        <v-row>
+            <v-col lg="4" style="padding-bottom:0">
+                <v-textarea outlined label="נוסח הודעה" clearable v-model="deadline_passed_text_box"></v-textarea>
+            </v-col>
+            <v-col>
+            הערה: על ההודעה לכלול את הביטוי הדינאמי <i>{תקלות}</i> בדיוק פעם אחת.
+            </v-col>
+        </v-row>
+        <v-row>
+            <v-col lg="4" style="padding-top:0">
+                <v-btn color="teal" dark block @click="deadline_passed_click">שמור</v-btn>
+            </v-col>
+        </v-row>
         
         <!-- ADD modal -->
 
-        <v-row justify="center">
+        <v-row>
             <v-dialog v-model="addEmailOrNum" persistent max-width="600px">
                 <v-card>
                     <v-card-title>
@@ -175,7 +236,7 @@
 
         <!-- Edit modal -->
 
-        <v-row justify="center">
+        <v-row>
             <v-dialog v-model="editEmailDialog" persistent max-width="600px">
                 <v-card>
                     <v-card-title>
@@ -223,7 +284,10 @@
               phoneNum: null,
               addEmailOrNum: false,
               addEmail: false,
-              test_text_box: null,
+              status_changed_done_text_box: null,
+              status_changed_unclear_text_box: null,
+              status_changed_continuous_text_box: null,
+              deadline_passed_text_box: null,
               email_columns: [
                   {
                       text: 'אימייל',
@@ -260,18 +324,81 @@
             }
         },
         created() {
-            this.emails = JSON.parse(localStorage.getItem('taskManager')).email_addresses_for_notifications
+            var task_manager = JSON.parse(localStorage.getItem('taskManager'));
+            this.emails = task_manager.email_addresses_for_notifications
             this.emails = this.emails.map(item => ({ item }))
-            this.phoneNums = JSON.parse(localStorage.getItem('taskManager')).phone_numbers_for_notifications
+            this.phoneNums = task_manager.phone_numbers_for_notifications
             this.phoneNums = this.phoneNums.map(item => ({ item }))
+            this.status_changed_done_text_box = task_manager.changed_status_done_message
+            this.status_changed_unclear_text_box = task_manager.changed_status_unclear_message
+            this.status_changed_continuous_text_box = task_manager.changed_status_continuous_message
+            this.deadline_passed_text_box = task_manager.deadline_passed_message
         },
         computed: {
             ...mapGetters(['getManager'])
         },
+        watch: {
+          getManager(val) {
+            if(val) {
+              console.log("***");
+              console.log(val);
+              console.log("***");
+              localStorage.setItem('taskManager', JSON.stringify(val))
+            }
+          }
+        },
         methods: {
-            ...mapActions(['updateManagerPassword','addManagerEmailAndPhoneNum','updateManagerEmailOrNum','deleteManagerEmailOrNum']),
-            test_click(){
-                alert(JSON.stringify(this.test_text_box));
+            ...mapActions(['updateManagerPassword','addManagerEmailAndPhoneNum','updateManagerEmailOrNum','deleteManagerEmailOrNum', 'updateManagerChangedStatusDoneMessage', 'updateManagerChangedStatusUnclearMessage', 'updateManagerChangedStatusContinuousMessage', 'updateManagerDeadlinePassedMessage']),
+            status_changed_done_click(){
+                if ((this.status_changed_done_text_box.match(/{תקלה}/g) || []).length == 1 && (this.status_changed_done_text_box.match(/{שם}/g) || []).length == 1){
+                    const payload = {
+                                _id: JSON.parse(localStorage.getItem('taskManager'))._id,
+                                changed_status_done_message: this.status_changed_done_text_box,
+                    };
+                    this.updateManagerChangedStatusDoneMessage(payload);
+                }
+                else{
+                    Swal.fire('שגיאה', 'הביטויים הדינאמיים לא צוינו בהודעה בדיוק פעם אחת.', 'error')
+                }
+            },
+            
+            status_changed_unclear_click(){
+                if ((this.status_changed_unclear_text_box.match(/{תקלה}/g) || []).length == 1 && (this.status_changed_unclear_text_box.match(/{שם}/g) || []).length == 1){
+                    const payload = {
+                                _id: JSON.parse(localStorage.getItem('taskManager'))._id,
+                                changed_status_unclear_message: this.status_changed_unclear_text_box,
+                    };
+                    this.updateManagerChangedStatusUnclearMessage(payload);
+                }
+                else{
+                    Swal.fire('שגיאה', 'הביטויים הדינאמיים לא צוינו בהודעה בדיוק פעם אחת.', 'error')
+                }
+            },
+            
+            status_changed_continuous_click(){
+                if ((this.status_changed_continuous_text_box.match(/{תקלה}/g) || []).length == 1 && (this.status_changed_continuous_text_box.match(/{שם}/g) || []).length == 1){
+                    const payload = {
+                                _id: JSON.parse(localStorage.getItem('taskManager'))._id,
+                                changed_status_continuous_message: this.status_changed_continuous_text_box,
+                    };
+                    this.updateManagerChangedStatusContinuousMessage(payload);
+                }
+                else{
+                    Swal.fire('שגיאה', 'הביטויים הדינאמיים לא צוינו בהודעה בדיוק פעם אחת.', 'error')
+                }
+            },
+            
+            deadline_passed_click(){
+                if ((this.deadline_passed_text_box.match(/{תקלות}/g) || []).length == 1){
+                    const payload = {
+                                _id: JSON.parse(localStorage.getItem('taskManager'))._id,
+                                deadline_passed_message: this.deadline_passed_text_box,
+                    };
+                    this.updateManagerDeadlinePassedMessage(payload);
+                }
+                else{
+                    Swal.fire('שגיאה', 'הביטוי הדינאמי לא צוין בהודעה בדיוק פעם אחת.', 'error')
+                }
             },
             saveNewPassword() {
                 if (this.$refs.password.reportValidity()) {
@@ -280,6 +407,7 @@
                             _id: JSON.parse(localStorage.getItem('taskManager'))._id,
                             password: this.newPassword
                         }
+
                         this.updateManagerPassword(payload)
                         this.newPassword = null
                         this.repeatPassword = null
@@ -296,8 +424,10 @@
                             _id: JSON.parse(localStorage.getItem('taskManager'))._id,
                             email: this.email,
                         }
+                        
                         this.addManagerEmailAndPhoneNum(payload)
                         this.emails.push({'item': this.email})
+                        
                         this.addEmailOrNum = false
                         this.addEmail = false
                         this.email = null
@@ -310,6 +440,7 @@
                         }
                         this.addManagerEmailAndPhoneNum(payload)
                         this.phoneNums.push({'item': this.phoneNum})
+                        
                         this.addEmailOrNum = false
                         this.addEmail = false
                         this.phoneNum = null
@@ -342,6 +473,7 @@
                         }
                     }
                     this.updateManagerEmailOrNum(payload)
+
                 }
                 this.emailToEdit = null
                 this.editedEmail = null

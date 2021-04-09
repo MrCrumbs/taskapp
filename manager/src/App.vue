@@ -59,8 +59,10 @@ import {mapActions} from 'vuex'
         darwer: true,
           items: [
           { title: 'תקלות', icon: 'mdi-medical-bag', route: '/tasks' },
+          { title: 'תקלות רכבים', icon: 'mdi-car-cog', route: '/vehicleTasks' },
           { title: 'תלמידים', icon: 'mdi-account-group', route: '/students' },
           { title: 'מיקומים', icon: 'mdi-map-marker-multiple', route: '/locations' },
+          { title: 'רכבים', icon: 'mdi-car', route: '/vehicleLocations' },
           { title: 'הגדרות', icon: 'mdi-cog', route: '/settings' },
           { title: 'דוח לפי מיקום', icon: 'mdi-map-marker', route: '/locationReport' },
           { title: 'פח תקלות', icon: 'mdi-trash-can', route: '/recycleBin' },

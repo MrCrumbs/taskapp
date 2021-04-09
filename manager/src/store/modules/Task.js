@@ -38,11 +38,13 @@ const actions = {
         formData.append('urgency', payload.urgency)
         formData.append('full_name', payload.full_name)
         formData.append('status', payload.status)
-        formData.append('description', payload.description)
+        if(payload.description != null)
+            formData.append('description', payload.description)
         formData.append('location', payload.location)
         formData.append('phone_number', payload.phone_number)
         formData.append('created_on', payload.created_on)
         formData.append('modified_on', payload.modified_on)
+        formData.append('task_type', payload.task_type)
         if(payload.image != null) {
           formData.append('image', payload.image)
         }
@@ -77,6 +79,12 @@ const actions = {
         delete payload.id
         let changed = payload.changed
         delete payload.changed
+        let message_body_done = payload.message_body_done
+        delete payload.message_body_done
+        let message_body_unclear = payload.message_body_unclear
+        delete payload.message_body_unclear
+        let message_body_continuous = payload.message_body_continuous
+        delete payload.message_body_continuous
         console.log("Changed: " + changed.toString());
         console.log("phone number: " + payload.phone_number);
         commit('setTaskUpdated', null)
@@ -85,6 +93,9 @@ const actions = {
                 commit('setTaskUpdated', 'success')
                 if(changed && !payload.deleted && payload.status != "חדש" && payload.phone_number && payload.phone_number!="undefined"){
                     console.log("About to send SMS Post request");
+                    payload.message_body_done = message_body_done;
+                    payload.message_body_unclear = message_body_unclear;
+                    payload.message_body_continuous = message_body_continuous;
                     axios.post(baseURL+"send_sms_to_student", payload).then(result => {
                         if(result.data.status == "success")
                             console.log("Successful SMS request");
